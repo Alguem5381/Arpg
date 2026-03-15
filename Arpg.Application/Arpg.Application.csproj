@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
+      <PackageReference Include="FluentResults" Version="4.0.0" />
+      <PackageReference Include="FluentValidation" Version="12.1.1" />
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+      <PackageReference Include="NCalcSync" Version="5.11.0" />
+      <PackageReference Include="Riok.Mapperly" Version="5.0.0-next.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Arpg.Contracts\Arpg.Contracts.csproj" />
+      <ProjectReference Include="..\Arpg.Core\Arpg.Core.csproj" />
+      <ProjectReference Include="..\Arpg.Shared\Arpg.Shared.csproj" />
+    </ItemGroup>
+
+</Project>

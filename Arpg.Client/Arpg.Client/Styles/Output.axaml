@@ -1,0 +1,59 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Arpg.Client.Controls">
+    <Style Selector="controls|AnimatedBorder">
+        <Setter Property="Background" Value="{StaticResource FirstElement}"/>
+        <Setter Property="Foreground" Value="{StaticResource SecondText}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="50"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="TargetPadding" Value="20,10,20,10"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_Border" 
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                        ClipToBounds="True">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center">
+                    </ContentPresenter>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="controls|AnimatedBorder /template/ Border#PART_Border">
+        <Setter Property="Opacity" Value="0"/>
+        <Setter Property="MaxHeight" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="CubicEaseOut"/>
+                <DoubleTransition Property="MaxHeight" Duration="0:0:0.4" Easing="CubicEaseOut"/>
+                <ThicknessTransition Property="Padding" Duration="0:0:0.4" Easing="CubicEaseOut"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="controls|AnimatedBorder:animate /template/ Border#PART_Border">
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="MaxHeight" Value="1000"/> 
+        <Setter Property="Padding" Value="{TemplateBinding TargetPadding}"/>
+    </Style>
+    
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <controls:AnimatedBorder>
+                <TextBlock Text="Teste"
+                           Foreground="Black"/>
+            </controls:AnimatedBorder>
+        </Border>
+    </Design.PreviewWith>
+</Styles>

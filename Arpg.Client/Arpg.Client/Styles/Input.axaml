@@ -1,0 +1,125 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Arpg.Client.Controls">
+
+    <!-- AuthTextBox -->
+    <Style Selector="controls|AnimatedTextBox">
+        <Setter Property="ErrorForeground" Value="{StaticResource FirstWarning}"/>
+        <Setter Property="OutsideBorderThickness" Value="0"/>
+        <Setter Property="OutsideCornerRadius" Value="10"/>
+        <Setter Property="OutsideBackground" Value="{StaticResource FirstElement}"/>
+        <Setter Property="OutsidePadding" Value="10"/>
+        <Setter Property="WatermarkForeground" Value="{StaticResource ThirdText}"/>
+        <Setter Property="Background" Value="{StaticResource SecondElement}"/>
+        <Setter Property="Foreground" Value="{StaticResource SecondText}"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="FocusAdorner" Value="{x:Null}"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding OutsideBackground}"
+                        CornerRadius="{TemplateBinding OutsideCornerRadius}"
+                        BorderBrush="{TemplateBinding OutsideBorderBrush}"
+                        BorderThickness="{TemplateBinding OutsideBorderThickness}"
+                        Padding="{TemplateBinding OutsidePadding}">
+                    
+                    <Grid RowDefinitions="Auto, Auto">
+                        
+                        <Border Grid.Row="0"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                Padding="{TemplateBinding Padding}">
+                            <Panel>
+                                <TextBlock Name="PART_Watermark"
+                                           Text="{TemplateBinding Watermark}"
+                                           Foreground="{TemplateBinding WatermarkForeground}"
+                                           IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           Opacity="0.7"/>
+                                <ScrollViewer Name="PART_ScrollViewer"
+                                              HorizontalScrollBarVisibility="Hidden"
+                                              VerticalScrollBarVisibility="Hidden">
+                                    <TextPresenter Name="PART_TextPresenter"
+                                                   Text="{TemplateBinding Text, Mode=TwoWay}"
+                                                   CaretBrush="{TemplateBinding Foreground}"
+                                                   TextWrapping="NoWrap"
+                                                   PasswordChar="{TemplateBinding PasswordChar}"
+                                                   SelectionBrush="{TemplateBinding Foreground}"
+                                                   VerticalAlignment="Center"/>
+                                </ScrollViewer>
+                            </Panel>
+                        </Border>
+
+                        <Border Name="PART_ErrorContainer"
+                                Grid.Row="1"
+                                ClipToBounds="True">
+
+                            <TextBlock Text="{TemplateBinding Error}"
+                                       Foreground="{TemplateBinding ErrorForeground}"
+                                       FontSize="12"
+                                       Margin="5,6,0,0"
+                                       TextWrapping="Wrap">
+                            </TextBlock>
+                        </Border>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="controls|AnimatedTextBox /template/ Border#PART_ErrorContainer">
+        <Setter Property="Opacity" Value="0"/>
+        <Setter Property="MaxHeight" Value="0"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="MaxHeight" Duration="0:0:0.2" Easing="CubicEaseIn"/>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="CubicEaseIn"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="controls|AnimatedTextBox:has-error /template/ Border#PART_ErrorContainer">
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="MaxHeight" Value="100"/>
+    </Style>
+    
+    <!-- AnimatedButton -->
+    <Style Selector="controls|AnimatedButton">
+        <Setter Property="Background" Value="{StaticResource FirstElement}"/>
+        <Setter Property="FocusAdorner" Value="{x:Null}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="15"/>
+        <Setter Property="Padding" Value="25,15,25,15"/>
+        <Setter Property="BackgroundOnHover" Value="{StaticResource SecondElement}"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_Border" 
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    
+    <Style Selector="controls|AnimatedButton:pointerover /template/ Border#PART_Border">
+        <Setter Property="Background" Value="{TemplateBinding BackgroundOnHover}"/>
+        <Setter Property="RenderTransform" Value="scale(0.95)"/>
+        <Setter Property="RenderTransformOrigin" Value="50%,50%"/>
+    </Style>
+    
+    <Style Selector="controls|AnimatedButton:disabled /template/ Border#PART_Border">
+        <Setter Property="Opacity" Value="0.3"/>
+    </Style>
+    
+    <Design.PreviewWith>
+        <Border Padding="100"
+                Background="Transparent">
+            <controls:AnimatedTextBox/>
+        </Border>
+    </Design.PreviewWith>
+</Styles>

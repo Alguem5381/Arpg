@@ -1,0 +1,38 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Arpg.Client.ViewModels"
+             xmlns:authVm="using:Arpg.Client.ViewModels.Auth"
+             xmlns:v="using:Arpg.Client.Views"
+             xmlns:authV="using:Arpg.Client.Views.Auth"
+             x:Class="Arpg.Client.App"
+             RequestedThemeVariant="Default">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="Assets/Colors.axaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+    
+    <Application.Styles>
+        <FluentTheme/>
+        <StyleInclude Source="Styles/Input.axaml"/>
+        <StyleInclude Source="Styles/Output.axaml"/>
+    </Application.Styles>
+
+    <Application.DataTemplates>
+
+        <DataTemplate DataType="{x:Type vm:MainViewModel}">
+            <v:MainView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type authVm:LoginViewModel}">
+            <authV:LoginView />
+        </DataTemplate>
+        
+        <DataTemplate DataType="{x:Type authVm:RegisterViewModel}">
+            <authV:RegisterView />
+        </DataTemplate>
+        
+        </Application.DataTemplates>
+</Application>
