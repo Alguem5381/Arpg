@@ -17,36 +17,54 @@ namespace Arpg.Client.Extensions;
 
 public static class DependencyInjectionExtensions
 {
-    extension(IServiceCollection servicesCollection)
+    public static IServiceCollection AddClientConfiguration(this IServiceCollection servicesCollection)
     {
-        public IServiceCollection AddClientConfiguration()
-        {
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.BrowserConsole()
-                .CreateLogger();
+        servicesCollection.AddClientLogging();
+        servicesCollection.AddClientValidators();
+        servicesCollection.AddClientViewModels();
+        servicesCollection.AddClientServices();
 
-            servicesCollection.AddLogging(logging => logging.AddSerilog());
+        return servicesCollection;
+    }
 
-            servicesCollection.AddValidatorsFromAssemblyContaining<CreateDtoValidator>();
+    public static IServiceCollection AddClientLogging(this IServiceCollection servicesCollection)
+    {
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.BrowserConsole()
+            .CreateLogger();
 
-            servicesCollection.AddSingleton<MainViewModel>();
-            servicesCollection.AddSingleton<LoginViewModel>();
-            servicesCollection.AddSingleton<RegisterViewModel>();
+        servicesCollection.AddLogging(logging => logging.AddSerilog());
+        return servicesCollection;
+    }
 
-            servicesCollection.AddSingleton<IUserSession, UserSession>();
-            servicesCollection.AddScoped<IAuthServices, AuthServices>();
-            servicesCollection.AddSingleton<INavigationServices, NavigationService>();
+    public static IServiceCollection AddClientValidators(this IServiceCollection servicesCollection)
+    {
+        servicesCollection.AddValidatorsFromAssemblyContaining<CreateDtoValidator>();
+        return servicesCollection;
+    }
 
-            servicesCollection.AddTransient<AuthHeaderHandler>();
+    public static IServiceCollection AddClientViewModels(this IServiceCollection servicesCollection)
+    {
+        servicesCollection.AddSingleton<MainViewModel>();
+        servicesCollection.AddSingleton<LoginViewModel>();
+        servicesCollection.AddSingleton<ValidateViewModel>();
+        servicesCollection.AddSingleton<INavigationServices, NavigationService>();
+        return servicesCollection;
+    }
 
-            servicesCollection.AddHttpClient<IAuthServices, AuthServices>(Options)
-                .AddHttpMessageHandler<AuthHeaderHandler>();
-            
-            return servicesCollection;
+    public static IServiceCollection AddClientServices(this IServiceCollection servicesCollection)
+    {
+        servicesCollection.AddSingleton<IUserSession, UserSession>();
+        servicesCollection.AddScoped<IAuthServices, AuthServices>();
+        servicesCollection.AddTransient<AuthHeaderHandler>();
 
-            static void Options(HttpClient client)
-                => client.BaseAddress = new Uri("http://localhost:5067/");
-        }
+        servicesCollection.AddHttpClient<IAuthServices, AuthServices>(Options)
+            .AddHttpMessageHandler<AuthHeaderHandler>();
+
+        return servicesCollection;
+
+        static void Options(HttpClient client)
+            => client.BaseAddress = new Uri("http://localhost:5067/");
     }
 }

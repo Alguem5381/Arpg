@@ -8,4 +8,4 @@ public record SuccessLoginDto(string Message, string Token);
 public record InformationDto(string DisplayName, string Username);
 public record UserDto(string DisplayName, string Username);
 public record CodeDto(Guid Key);
-public record ValidateCodeDto(Guid Key, int Value);
+public record ValidateCodeDto(Guid Key, string Value);

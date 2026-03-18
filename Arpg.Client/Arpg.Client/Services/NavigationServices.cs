@@ -20,7 +20,7 @@ public partial class NavigationService(IServiceProvider serviceProvider) : Obser
     public void NavigateTo<TViewModel>(Action<TViewModel>? configure = null)
     where TViewModel : ViewModelBase
     {
-        if (CurrentViewModel != null) 
+        if (CurrentViewModel != null && CurrentViewModel is not JumpableViewModel) 
             _history.Push(CurrentViewModel);
 
         var vm = serviceProvider.GetRequiredService<TViewModel>();

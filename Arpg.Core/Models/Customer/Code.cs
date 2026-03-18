@@ -4,5 +4,5 @@ public class Code
 {
     public Guid OwnerId { get; init; }
     public Guid Key { get; } = Guid.NewGuid();
-    public int Value { get; } = Random.Shared.Next(100000, 999999);
+    public string Value { get; set; } = Random.Shared.Next(0, 999999).ToString("D6");
 }

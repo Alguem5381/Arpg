@@ -10,7 +10,7 @@ public static class Program
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        
+
         builder.ApiConfigurations().Services
             .ApplicationConfigurations()
             .InfrastructureConfigurations(builder.Configuration);
@@ -20,7 +20,7 @@ public static class Program
         app.UseSerilogRequestLogging();
 
         app.UseExceptionHandler();
-        
+
         app.UseHttpsRedirection();
 
         app.UseCors("AllowWasmClient");
@@ -29,7 +29,11 @@ public static class Program
         app.UseAuthorization();
 
         app.UseSwagger();
-        app.UseSwaggerUI();
+        app.UseSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "Arpg API");
+            options.RoutePrefix = string.Empty;
+        });
 
         app.MapControllers();
 

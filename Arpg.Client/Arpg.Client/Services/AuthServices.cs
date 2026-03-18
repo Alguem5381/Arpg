@@ -19,10 +19,11 @@ public class AuthServices
     IUserSession userSession,
     IValidator<LoginDto> loginDtoValidator,
     IValidator<NewDto> newDtoValidator,
+    IValidator<ValidateCodeDto> validateCodeDtoValidator,
     ILogger<AuthServices> logger
 ) : IAuthServices
 {
-    public async Task<Result> LoginAsync(LoginDto request)
+    public async Task<Result<CodeDto>> LoginAsync(LoginDto request)
     {
         var validation = await loginDtoValidator.ValidateAsync(request);
 
@@ -34,22 +35,20 @@ public class AuthServices
             var response =
                 await client.PostAsJsonAsync(ApiEndpoints.User.Login, request, AppJsonContext.Default.LoginDto);
 
-            var result = await response.ToResultAsync<SuccessLoginDto>();
+            var result = await response.ToResultAsync<CodeDto>();
 
             if (result.IsFailed)
                 return Result.Fail(result.Errors);
 
-            userSession.Token = result.Value.Token;
-
-            logger.LogInformation("Login successful");
-            return Result.Ok();
+            logger.LogInformation("Login Initialized. Waiting for 2FA validation.");
+            return Result.Ok(result.Value);
         }
-        catch (HttpRequestException ex)
+        catch (HttpRequestException)
         {
             logger.LogError("No connection to the server.");
             return Result.Fail(new ApiError("No connection to the server.", GeneralCodes.NoConnection, []));
         }
-        catch (TaskCanceledException ex)
+        catch (TaskCanceledException)
         {
             logger.LogError("The request took a long time.");
             return Result.Fail(new ApiError("The request took a long time.", GeneralCodes.Timeout, []));
@@ -61,7 +60,7 @@ public class AuthServices
         }
     }
 
-    public async Task<Result> New(NewDto request)
+    public async Task<Result<CodeDto>> NewAsync(NewDto request)
     {
         var validation = await newDtoValidator.ValidateAsync(request);
 
@@ -73,6 +72,43 @@ public class AuthServices
             var response =
                 await client.PostAsJsonAsync(ApiEndpoints.User.New, request, AppJsonContext.Default.NewDto);
 
+            var result = await response.ToResultAsync<CodeDto>();
+
+            if (result.IsFailed)
+                return Result.Fail(result.Errors);
+
+            logger.LogInformation("Registration Initialized. Waiting for 2FA validation.");
+            return Result.Ok(result.Value);
+        }
+        catch (HttpRequestException)
+        {
+            logger.LogError("No connection to the server.");
+            return Result.Fail(new ApiError("No connection to the server.", DataFormatCodes.ValidationError, []));
+        }
+        catch (TaskCanceledException)
+        {
+            logger.LogError("The request took a long time.");
+            return Result.Fail(new ApiError("The request took a long time.", GeneralCodes.Timeout, []));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("An unknown error occurred. {ex}", ex.Message);
+            return Result.Fail(new ApiError("Internal Fail.", GeneralCodes.Domain, []));
+        }
+    }
+
+    public async Task<Result> ValidateAsync(ValidateCodeDto request)
+    {
+        var validation = await validateCodeDtoValidator.ValidateAsync(request);
+
+        if (!validation.IsValid)
+            return validation.ToApiError();
+            
+        try
+        {
+            var response =
+                await client.PostAsJsonAsync(ApiEndpoints.User.Validate, request, AppJsonContext.Default.ValidateCodeDto);
+
             var result = await response.ToResultAsync<SuccessLoginDto>();
 
             if (result.IsFailed)
@@ -80,15 +116,15 @@ public class AuthServices
 
             userSession.Token = result.Value.Token;
 
-            logger.LogInformation("Login successful");
+            logger.LogInformation("2FA Validation successful. Logged in.");
             return Result.Ok();
         }
-        catch (HttpRequestException ex)
+        catch (HttpRequestException)
         {
             logger.LogError("No connection to the server.");
-            return Result.Fail(new ApiError("No connection to the server.", DataFormatCodes.ValidationError, []));
+            return Result.Fail(new ApiError("No connection to the server.", GeneralCodes.NoConnection, []));
         }
-        catch (TaskCanceledException ex)
+        catch (TaskCanceledException)
         {
             logger.LogError("The request took a long time.");
             return Result.Fail(new ApiError("The request took a long time.", GeneralCodes.Timeout, []));

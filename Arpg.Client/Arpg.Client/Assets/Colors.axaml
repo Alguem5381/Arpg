@@ -1,15 +1,39 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <SolidColorBrush x:Key="FirstPlate" Color="#385F71"/>
-    <SolidColorBrush x:Key="SecondPlate" Color="#FFFFFF"/>
-    <SolidColorBrush x:Key="ThirdPlate" Color="#9CAFB8"/>
-    <SolidColorBrush x:Key="FourPlate" Color="#2C0E37"/>
-    <SolidColorBrush x:Key="FirstElement" Color="#4D515B"/>
-    <SolidColorBrush x:Key="SecondElement" Color="#9CAFB8"/>
-    <SolidColorBrush x:Key="FirstText" Color="#101010"/>
-    <SolidColorBrush x:Key="SecondText" Color="#F0F0F0"/>
-    <SolidColorBrush x:Key="ThirdText" Color="#4D515B"/>
-    <SolidColorBrush x:Key="FourText" Color="#83B5AA"/>
-    <SolidColorBrush x:Key="FirstWarning" Color="#FF4F48"/>
-    <SolidColorBrush x:Key="SecondWarning" Color="#720E07"/>
+    
+    <!-- 
+        Tonal Palette Patterns:
+        Plate: Structural containers (Backgrounds, Cards)
+        Element: Interactive components (Inputs, Buttons)
+        Text: Content readability
+    -->
+    
+    <!-- Plates (Surfaces) -->
+    <SolidColorBrush x:Key="FirstPlate" Color="#385F71"/>   <!-- Primary Deep / Main Background -->
+    <SolidColorBrush x:Key="SecondPlate" Color="#FFFFFF"/>  <!-- High Surface / White -->
+    <SolidColorBrush x:Key="ThirdPlate" Color="#9CAFB8"/>   <!-- Low Surface / Muted -->
+    <SolidColorBrush x:Key="FourPlate" Color="#2C0E37"/>    <!-- Accent Deep -->
+    <SolidColorBrush x:Key="SelectionPlate" Color="#80385F71"/> <!-- Semi-transparent Blue for Selection -->
+    
+    <!-- Elements (Components) -->
+    <SolidColorBrush x:Key="FirstElement" Color="#4D515B"/>  <!-- Inactive / Tertiary -->
+    <SolidColorBrush x:Key="SecondElement" Color="#9CAFB8"/> <!-- Secondary -->
+    <SolidColorBrush x:Key="FirstSuccess" Color="#2D6A4F"/>  <!-- Positive Action -->
+    
+    <!-- Text -->
+    <SolidColorBrush x:Key="FirstText" Color="#101010"/>     <!-- High Contrast Dark -->
+    <SolidColorBrush x:Key="SecondText" Color="#F0F0F0"/>    <!-- High Contrast Light -->
+    <SolidColorBrush x:Key="ThirdText" Color="#4D515B"/>     <!-- Muted Content -->
+    <SolidColorBrush x:Key="FourText" Color="#83B5AA"/>      <!-- Accent Text -->
+    
+    <!-- Feedback -->
+    <SolidColorBrush x:Key="FirstWarning" Color="#FF4F48"/>  <!-- Error / Alert -->
+    <SolidColorBrush x:Key="SecondWarning" Color="#720E07"/> <!-- Critical -->
+
+    <!-- Elevation (Shadows) -->
+    <!-- Format: OffsetX OffsetY Blur Spread Color -->
+    <BoxShadows x:Key="Elevation1">0 2 5 0 #20000000</BoxShadows>
+    <BoxShadows x:Key="Elevation2">0 5 15 0 #30000000</BoxShadows>
+    <BoxShadows x:Key="Elevation3">0 8 30 0 #40000000</BoxShadows>
+
 </ResourceDictionary>

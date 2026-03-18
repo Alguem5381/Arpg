@@ -1,0 +1,77 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Arpg.Client.ViewModels.Auth"
+             xmlns:control="clr-namespace:Arpg.Client.Controls"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+             x:Class="Arpg.Client.Views.Auth.ValidateView"
+             x:DataType="vm:ValidateViewModel">
+    
+    <Grid Background="{StaticResource FirstPlate}">
+        <Border Background="{StaticResource SecondPlate}"
+                Padding="30"
+                CornerRadius="20"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <StackPanel Spacing="10"
+                        MaxWidth="300">
+                <TextBlock Text="VALIDAR"
+                           Foreground="{StaticResource FirstPlate}"
+                           FontSize="50"
+                           FontWeight="Bold"
+                           Padding="20"
+                           HorizontalAlignment="Center"/>
+                
+                <TextBlock Text="Digite o código de 6 dígitos enviado para o seu e-mail:"
+                           Foreground="{StaticResource FirstPlate}"
+                           FontSize="12"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           Margin="0,0,0,10"
+                           Opacity="0.8"/>
+
+                <control:AnimatedTextBox Text="{Binding Code}"
+                                     HasError="{Binding CodeError.Show}"
+                                     Error="{Binding CodeError.Value}"
+                                     Watermark="Código de 6 dígitos"
+                                     MaxLength="6"/>
+
+                <control:AnimatedBorder Animate="{Binding ErrorMessage.Show}"
+                                        Background="{StaticResource FirstWarning}">
+                    <TextBlock Text="{Binding ErrorMessage.Value}"
+                               FontSize="14"/>
+                </control:AnimatedBorder>
+                
+                <Separator Background="{StaticResource FirstPlate}"/>
+                
+                <StackPanel Orientation="Horizontal"
+                            Spacing="10"
+                            HorizontalAlignment="Center"
+                            Margin="0,20,0,0">
+                    <control:AnimatedButton Content="Verificar"
+                                            Command="{Binding ValidateCommand}"
+                                            Padding="25,15,25,15"
+                                            CornerRadius="15"
+                                            IsDefault="True"
+                                            Background="{StaticResource FirstElement}"
+                                            IsEnabled="{Binding !IsLoading.Value}"/>
+                    
+                    <control:AnimatedButton Content="Voltar"
+                                            Command="{Binding GoBackCommand}"
+                                            Padding="25,15,25,15"
+                                            CornerRadius="15"
+                                            Background="{StaticResource FirstPlate}"
+                                            Opacity="0.7"
+                                            IsEnabled="{Binding !IsLoading.Value}"/>
+                </StackPanel>
+
+                <ProgressBar VerticalAlignment="Bottom"
+                             IsVisible="{Binding IsLoading.Value}"
+                             IsIndeterminate="True"
+                             Margin="0,15,0,0"
+                             Foreground="{StaticResource FirstElement}"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

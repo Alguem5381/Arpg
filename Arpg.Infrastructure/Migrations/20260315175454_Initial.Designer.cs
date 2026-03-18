@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Arpg.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260214074100_Initial")]
+    [Migration("20260315175454_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,6 +24,92 @@ namespace Arpg.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Arpg.Core.Models.Customer.Account", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<int>("FailedLoginAttempts")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsValid")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LockoutEnd")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.HasIndex("Username")
+                        .IsUnique();
+
+                    b.ToTable("Accounts");
+                });
+
+            modelBuilder.Entity("Arpg.Core.Models.Customer.Code", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("AccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("Codes");
+                });
+
+            modelBuilder.Entity("Arpg.Core.Models.Customer.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
 
             modelBuilder.Entity("Arpg.Core.Models.Sheet", b =>
                 {
@@ -45,8 +131,6 @@ namespace Arpg.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TemplateId");
 
                     b.HasIndex("UserId");
 
@@ -80,50 +164,31 @@ namespace Arpg.Infrastructure.Migrations
                     b.ToTable("Templates");
                 });
 
-            modelBuilder.Entity("Arpg.Core.Models.User", b =>
+            modelBuilder.Entity("Arpg.Core.Models.Customer.Account", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                    b.HasOne("Arpg.Core.Models.Customer.User", null)
+                        .WithOne()
+                        .HasForeignKey("Arpg.Core.Models.Customer.Account", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.Property<string>("DisplayName")
-                        .IsRequired()
-                        .HasColumnType("text");
+            modelBuilder.Entity("Arpg.Core.Models.Customer.Code", b =>
+                {
+                    b.HasOne("Arpg.Core.Models.Customer.Account", null)
+                        .WithMany("Codes")
+                        .HasForeignKey("AccountId");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("Username")
-                        .IsUnique();
-
-                    b.ToTable("Users");
+                    b.HasOne("Arpg.Core.Models.Customer.Account", null)
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Arpg.Core.Models.Sheet", b =>
                 {
-                    b.HasOne("Arpg.Core.Models.Template", null)
-                        .WithMany("Sheets")
-                        .HasForeignKey("TemplateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Arpg.Core.Models.User", null)
+                    b.HasOne("Arpg.Core.Models.Customer.User", null)
                         .WithMany("Sheets")
                         .HasForeignKey("UserId");
 
@@ -223,12 +288,12 @@ namespace Arpg.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Arpg.Core.Models.Template", b =>
+            modelBuilder.Entity("Arpg.Core.Models.Customer.Account", b =>
                 {
-                    b.Navigation("Sheets");
+                    b.Navigation("Codes");
                 });
 
-            modelBuilder.Entity("Arpg.Core.Models.User", b =>
+            modelBuilder.Entity("Arpg.Core.Models.Customer.User", b =>
                 {
                     b.Navigation("Sheets");
                 });

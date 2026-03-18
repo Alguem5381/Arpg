@@ -12,6 +12,7 @@ public static class ApiEndpoints
         public const string New = $"{BaseApi}/{nameof(User)}";
         public const string GetSelf = $"{BaseApi}/{nameof(User)}";
         public static string GetFlat(string username) => $"{BaseApi}/{nameof(User)}/{username}";
+        public const string Validate = $"{BaseApi}/{nameof(User)}/validate";
         public const string Delete = $"{BaseApi}/{nameof(User)}";
         public const string Edit = $"{BaseApi}/{nameof(User)}";
     }

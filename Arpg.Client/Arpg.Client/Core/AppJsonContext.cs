@@ -13,6 +13,8 @@ namespace Arpg.Client.Core;
 [JsonSerializable(typeof(LoginDto))]
 [JsonSerializable(typeof(NewDto))]
 [JsonSerializable(typeof(SuccessLoginDto))]
+[JsonSerializable(typeof(CodeDto))]
+[JsonSerializable(typeof(ValidateCodeDto))]
 [JsonSerializable(typeof(ErrorResponseDto))] 
 [JsonSerializable(typeof(ApiError))]
 // [JsonSerializable()]

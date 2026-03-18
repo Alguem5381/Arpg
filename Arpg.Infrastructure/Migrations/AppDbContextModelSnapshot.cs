@@ -80,6 +80,10 @@ namespace Arpg.Infrastructure.Migrations
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Key");
 
                     b.HasIndex("AccountId");

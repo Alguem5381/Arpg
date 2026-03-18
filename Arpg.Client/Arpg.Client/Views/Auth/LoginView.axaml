@@ -9,60 +9,203 @@
              x:DataType="vm:LoginViewModel">
 
     <Grid Background="{StaticResource FirstPlate}">
-        <Border Background="{StaticResource SecondPlate}"
-                Padding="30"
-                CornerRadius="20"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-            <StackPanel Spacing="10"
-                        MaxWidth="280">
-                <TextBlock Text="ARPG"
-                           Foreground="{StaticResource FirstPlate}"
-                           FontSize="75"
-                           FontWeight="Bold"
-                           Padding="20"
-                           HorizontalAlignment="Center"/>
-                <control:AnimatedTextBox Text="{Binding Username}"
-                                     HasError="{Binding UsernameErrorState}"
-                                     Error="{Binding UsernameError}"
-                                     Watermark="Nome de usuário"/>
-                <control:AnimatedTextBox Text="{Binding Password}"
-                                     HasError="{Binding PasswordErrorState}"
-                                     Error="{Binding PasswordError}"
-                                     Watermark="Senha"
-                                     PasswordChar="*"/>
-                <control:AnimatedBorder Animate="{Binding ErrorMessageState}"
-                                        Background="{StaticResource FirstWarning}">
-                    <TextBlock Text="{Binding ErrorMessage}"
-                               FontSize="14"/>
-                </control:AnimatedBorder>
-                
-                <Separator Background="{StaticResource FirstPlate}"/>
-                
-                <StackPanel Orientation="Horizontal"
-                            Spacing="10"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Bottom"
-                            Margin="30">
-                    <control:AnimatedButton Content="Login"
-                                            Command="{Binding LoginCommand}"
-                                            Padding="25,15,25,15"
-                                            CornerRadius="15"
-                                            IsDefault="True"
-                                            Background="{StaticResource FirstElement}"
-                                            IsEnabled="{Binding !IsLoading}"/>
-                    <control:AnimatedButton Content="Criar conta"
-                                            Command="{Binding GoToRegisterCommand}"
-                                            Padding="25,15,25,15"
-                                            CornerRadius="15"
-                                            Background="{StaticResource FirstElement}"
-                                            IsEnabled="{Binding !IsLoading}"/>
-                </StackPanel>
-                <ProgressBar VerticalAlignment="Bottom"
-                             IsVisible="{Binding IsLoading}"
-                             IsIndeterminate="True"
-                             Foreground="{StaticResource FirstElement}"/>
+        <ScrollViewer Name="PART_ScrollViewer"
+                      Classes="Minimal"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                <!-- Card principal -->
+                <Border Name="PART_Card"
+                        Background="White"
+                        BoxShadow="{StaticResource Elevation2}"
+                        Padding="40"
+                        Margin="0,40,0,40"
+                        CornerRadius="20"
+                        Width="330"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        RenderTransformOrigin="50%,50%"
+                        Opacity="0">
+                    <Border.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Opacity" Duration="0:0:0.45" Easing="CubicEaseOut"/>
+                            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.45" Easing="CubicEaseOut"/>
+                        </Transitions>
+                    </Border.Transitions>
+                    <StackPanel x:Name="MainContainer">
+                        <!-- Título ARPG -->
+                        <TextBlock Name="PART_Title"
+                                   Text="ARPG"
+                                   Foreground="{StaticResource FirstPlate}"
+                                   FontSize="75"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   Opacity="0">
+                            <TextBlock.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.35" Easing="CubicEaseOut"/>
+                                </Transitions>
+                            </TextBlock.Transitions>
+                        </TextBlock>
+
+                        <!-- Subtítulo -->
+                        <control:AnimatedLabel Name="PART_Subtitle"
+                                               Text="{Binding ModeSubtitle}"
+                                               Foreground="{StaticResource FirstPlate}"
+                                               FontSize="14"
+                                               FontWeight="SemiBold"
+                                               LetterSpacing="2"
+                                               Margin="0,-10,0,10"
+                                               HorizontalAlignment="Center"
+                                               Opacity="0">
+                            <control:AnimatedLabel.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="CubicEaseOut"/>
+                                </Transitions>
+                            </control:AnimatedLabel.Transitions>
+                        </control:AnimatedLabel>
+
+                        <control:NotificationLabel Text="{Binding ValidateNotificationText}"
+                                                  Foreground="{StaticResource ThirdText}"
+                                                  FontSize="12"
+                                                  HorizontalAlignment="Center"
+                                                  TargetMargin="0,0,0,-5"/>
+
+                        <!-- Campos do formulário -->
+                        <StackPanel Name="PART_Fields"
+                                    Opacity="0">
+                            <StackPanel.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.35" Easing="CubicEaseOut"/>
+                                </Transitions>
+                            </StackPanel.Transitions>
+
+                            <control:AnimatedTextBox Text="{Binding Username}"
+                                                 HasError="{Binding UsernameError.Show}"
+                                                 Error="{Binding UsernameError.Value}"
+                                                 Watermark="Nome de usuário"
+                                                 IsActive="{Binding !IsValidateMode}"/>
+
+                            <control:AnimatedTextBox Text="{Binding Email}"
+                                                 HasError="{Binding EmailError.Show}"
+                                                 Error="{Binding EmailError.Value}"
+                                                 Watermark="E-mail"
+                                                 IsActive="{Binding IsRegisterMode}"/>
+
+                            <control:AnimatedTextBox Text="{Binding Password}"
+                                                 HasError="{Binding PasswordError.Show}"
+                                                 Error="{Binding PasswordError.Value}"
+                                                 Watermark="Senha"
+                                                 PasswordChar="*"
+                                                 RevealPassword="{Binding RevealPassword}"
+                                                 IsActive="{Binding !IsValidateMode}"/>
+
+                            <control:AnimatedTextBox Text="{Binding ConfirmPassword}"
+                                                 HasError="{Binding ConfirmPasswordError.Show}"
+                                                 Error="{Binding ConfirmPasswordError.Value}"
+                                                 Watermark="Confirmar senha"
+                                                 PasswordChar="*"
+                                                 RevealPassword="{Binding RevealPassword}"
+                                                 IsActive="{Binding IsRegisterMode}"/>
+                        </StackPanel>
+
+                        <control:AnimatedBorder Animate="{Binding !IsValidateMode}"
+                                                Background="Transparent"
+                                                TargetPadding="0,0,0,10">
+                            <ToggleButton Classes="RevealToggle"
+                                          IsChecked="{Binding RevealPassword, Mode=TwoWay}"
+                                          HorizontalAlignment="Left"/>
+                        </control:AnimatedBorder>
+
+                        <control:AnimatedCodeBox IsActive="{Binding IsValidateMode}"
+                                                 Text="{Binding Code}"
+                                                 HasError="{Binding CodeError.Show}"
+                                                 Error="{Binding CodeError.Value}"
+                                                 Watermark="000000"
+                                                 TargetMargin="0,10,0,10"/>
+
+                        <control:AnimatedBorder Animate="{Binding ErrorMessage.Show}"
+                                                Background="Transparent"
+                                                TargetPadding="0,0,0,10"
+                                                HorizontalContentAlignment="Center"
+                                                VerticalContentAlignment="Center">
+                            <TextBlock Text="{Binding ErrorMessage.Value}"
+                                        FontSize="14"
+                                        Foreground="{StaticResource FirstWarning}"
+                                        TextWrapping="Wrap"
+                                        FontWeight="SemiBold"
+                                        TextAlignment="Center"
+                                        HorizontalAlignment="Center"/>
+                        </control:AnimatedBorder>
+
+                        <!-- Separador azul animado (substitui <Separator>) -->
+                        <Border Name="PART_Separator"
+                                Background="{StaticResource FirstPlate}"
+                                Height="1"
+                                MaxWidth="0"
+                                Opacity="0"
+                                HorizontalAlignment="Stretch">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="MaxWidth" Duration="0:0:0.4" Easing="CubicEaseInOut"/>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="CubicEaseOut"/>
+                                </Transitions>
+                            </Border.Transitions>
+                        </Border>
+
+                        <!-- Botões de ação -->
+                        <StackPanel Name="PART_Actions"
+                                    Orientation="Horizontal"
+                                    Spacing="10"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,20,0,0"
+                                    Opacity="0">
+                            <StackPanel.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="CubicEaseOut"/>
+                                </Transitions>
+                            </StackPanel.Transitions>
+
+                            <control:AnimatedButton Content="{Binding SubmitButtonText}"
+                                                    Command="{Binding SubmitCommand}"
+                                                    Padding="25,15,25,15"
+                                                    CornerRadius="15"
+                                                    IsDefault="True"
+                                                    Background="{StaticResource FirstSuccess}"
+                                                    BackgroundOnHover="{StaticResource FirstElement}"
+                                                    IsEnabled="{Binding !IsOperating}"/>
+
+                            <control:AnimatedButton Content="{Binding ToggleButtonText}"
+                                                    Command="{Binding ToggleModeCommand}"
+                                                    Padding="25,15,25,15"
+                                                    CornerRadius="15"
+                                                    Background="{StaticResource FirstPlate}"
+                                                    BackgroundOnHover="{StaticResource FirstElement}"
+                                                    IsEnabled="{Binding !IsOperating}"/>
+                        </StackPanel>
+
+                        <control:AnimatedBorder Animate="{Binding IsLoading.Value}"
+                                                Background="Transparent"
+                                                TargetPadding="0,15,0,0">
+                            <ProgressBar VerticalAlignment="Bottom"
+                                         IsIndeterminate="True"
+                                         Foreground="{StaticResource FirstElement}"/>
+                        </control:AnimatedBorder>
+                    </StackPanel>
+                </Border>
+
+                <!-- Spacer Invisível para o Teclado (Gambi-Premium) -->
+                <Rectangle Name="PART_KeyboardSpacer"
+                           Height="0"
+                           Fill="Transparent"
+                           IsHitTestVisible="False">
+                    <Rectangle.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Height" Duration="0:0:0.3" Easing="CubicEaseOut"/>
+                        </Transitions>
+                    </Rectangle.Transitions>
+                </Rectangle>
             </StackPanel>
-        </Border>
+        </ScrollViewer>
     </Grid>
 </UserControl>

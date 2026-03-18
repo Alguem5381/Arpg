@@ -40,7 +40,7 @@ public class UserController(UserServices userServices, AccountServices accountSe
     [AllowAnonymous]
     public async Task<IActionResult> Validate([FromBody] ValidateCodeDto request)
     {
-        var result = await accountServices.ValidateCode(request.Key, request.Value);
+        var result = await accountServices.ValidateCode(request);
 
         return result.IsFailed ? ToFailResults(result) : Ok(new SuccessLoginDto("Logged in successfully.", result.Value));
     }

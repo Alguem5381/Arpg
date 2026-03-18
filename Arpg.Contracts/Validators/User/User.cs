@@ -16,7 +16,7 @@ public class NewDtoValidator : AbstractValidator<NewDto>
             .Matches(@"^[a-zA-Z0-9_]+$")
             .WithMessage("The username can only contain letters, numbers, and underscores.")
             .WithErrorCode(UserCodes.InvalidUsernameFormat)
-        
+
             .NotEmpty()
             .WithMessage("Username is required")
             .WithErrorCode(DataFormatCodes.Required);
@@ -25,31 +25,31 @@ public class NewDtoValidator : AbstractValidator<NewDto>
             .Length(8, 50)
             .WithMessage("The password must be at least 8 characters long.")
             .WithErrorCode(DataFormatCodes.InvalidSize)
-            
+
             .NotEmpty()
             .WithMessage("A password is required.")
             .WithErrorCode(DataFormatCodes.Required);
-        
+
         RuleFor(x => x.ConfirmPassword)
             .Length(8, 50)
             .WithMessage("The password must be at least 8 characters long.")
             .WithErrorCode(DataFormatCodes.InvalidSize)
-        
+
             .Equal(x => x.Password)
             .WithMessage("The password must match")
             .WithErrorCode(UserCodes.PasswordMismatch)
-            
+
             .NotEmpty()
             .WithMessage("A password is required.")
             .WithErrorCode(DataFormatCodes.Required);
 
         RuleFor(x => x.Email)
             .EmailAddress()
-            .WithMessage("Invalid email format")
-            .WithErrorCode(DataFormatCodes.InvalidEmailFormat)
+            .WithMessage("Invalid email.")
+            .WithErrorCode(DataFormatCodes.InvalidEmail)
 
             .NotEmpty()
-            .WithMessage("Email is required")
+            .WithMessage("Email is required.")
             .WithErrorCode(DataFormatCodes.Required);
     }
 }
@@ -66,7 +66,7 @@ public class LoginDtoValidator : AbstractValidator<LoginDto>
         .Matches(@"^[a-zA-Z0-9_]+$")
         .WithMessage("The username can only contain letters, numbers, and underscores.")
         .WithErrorCode(UserCodes.InvalidUsernameFormat)
-        
+
         .NotEmpty()
         .WithMessage("Username is required")
         .WithErrorCode(DataFormatCodes.Required);
@@ -75,7 +75,7 @@ public class LoginDtoValidator : AbstractValidator<LoginDto>
         .Length(8, 50)
         .WithMessage("The password must be at least 8 characters long.")
         .WithErrorCode(DataFormatCodes.InvalidSize)
-        
+
         .NotEmpty()
         .WithMessage("A password is required.")
         .WithErrorCode(DataFormatCodes.Required);
@@ -109,9 +109,25 @@ public class DeleteDtoValidator : AbstractValidator<DeleteDto>
         .NotEmpty()
         .WithMessage("Your password is required.")
         .WithErrorCode(DataFormatCodes.Required)
-        
+
         .Length(8, 50)
         .WithMessage("The password must be at least 8 characters long.")
         .WithErrorCode(DataFormatCodes.InvalidSize);
+    }
+}
+
+public class ValidateCodeDtoValidator : AbstractValidator<ValidateCodeDto>
+{
+    public ValidateCodeDtoValidator()
+    {
+        RuleFor(x => x.Key)
+            .NotEmpty()
+            .WithMessage("Security key is required")
+            .WithErrorCode(DataFormatCodes.Required);
+
+        RuleFor(x => x.Value)
+            .Length(6, 6)
+            .WithMessage("The code must have exactly 6 digits.")
+            .WithErrorCode(DataFormatCodes.InvalidUniqueSize);
     }
 }
