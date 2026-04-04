@@ -1,0 +1,134 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Arpg.Client.Controls"
+        xmlns:controls1="clr-namespace:Arpg.Client.Styles.Controls">
+
+    <Style Selector="controls1|AnimatedCodeBox">
+        <Setter Property="ErrorForeground" Value="{StaticResource FirstWarning}"/>
+        <Setter Property="Background" Value="{StaticResource SecondElement}"/>
+        <Setter Property="Foreground" Value="{StaticResource SecondText}"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="15,20,15,20"/>
+        <Setter Property="FontSize" Value="24"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="LetterSpacing" Value="12"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="FocusAdorner" Value="{x:Null}"/>
+        <Setter Property="RenderTransformOrigin" Value="50%,50%"/>
+        <Setter Property="SelectionBrush" Value="{StaticResource SelectionPlate}"/>
+        <Setter Property="SelectionForegroundBrush" Value="{StaticResource SecondText}"/>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid MaxHeight="{TemplateBinding InternalMaxHeight}"
+                      ClipToBounds="True">
+
+                    <Grid.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="MaxHeight" Duration="0:0:1.0" Easing="QuarticEaseInOut"/>
+                        </Transitions>
+                    </Grid.Transitions>
+
+                    <Border Background="Transparent"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+
+                        <Grid RowDefinitions="Auto, Auto">
+
+                            <Border Name="PART_OuterBorder"
+                                    Grid.Row="0"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="{TemplateBinding CornerRadius}"
+                                    Padding="{TemplateBinding Padding}"
+                                    Opacity="{TemplateBinding InternalOpacity}">
+
+                                <Border.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition Property="Opacity" Duration="0:0:0.5" Easing="CubicEaseInOut"/>
+                                        <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                                        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" Easing="CubicEaseOut"/>
+                                    </Transitions>
+                                </Border.Transitions>
+
+                                <Panel>
+                                    <TextBlock Name="PART_Watermark"
+                                               Text="{TemplateBinding Watermark}"
+                                               Foreground="{StaticResource ThirdText}"
+                                               IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"
+                                               FontSize="18"
+                                               FontWeight="Normal"
+                                               LetterSpacing="{TemplateBinding LetterSpacing}"
+                                               Opacity="0.7"/>
+
+                                    <ScrollViewer Name="PART_ScrollViewer"
+                                                  HorizontalScrollBarVisibility="Hidden"
+                                                  VerticalScrollBarVisibility="Hidden">
+                                        <TextPresenter Name="PART_TextPresenter"
+                                                       Text="{TemplateBinding Text, Mode=TwoWay}"
+                                                       CaretIndex="{TemplateBinding CaretIndex}"
+                                                       SelectionStart="{TemplateBinding SelectionStart}"
+                                                       SelectionEnd="{TemplateBinding SelectionEnd}"
+                                                       CaretBrush="{TemplateBinding Foreground}"
+                                                       TextWrapping="NoWrap"
+                                                       PasswordChar="{TemplateBinding PasswordChar}"
+                                                       SelectionBrush="{TemplateBinding SelectionBrush}"
+                                                       SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                                       VerticalAlignment="Center"/>
+                                    </ScrollViewer>
+
+                                </Panel>
+                            </Border>
+
+                            <Border Name="PART_ErrorContainer"
+                                    Grid.Row="1"
+                                    ClipToBounds="True"
+                                    MaxHeight="{TemplateBinding InternalErrorHeight}"
+                                    Opacity="{TemplateBinding InternalErrorOpacity}">
+
+                                <Border.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition Property="MaxHeight" Duration="0:0:0.3" Easing="CubicEaseInOut"/>
+                                        <DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="CubicEaseInOut"/>
+                                    </Transitions>
+                                </Border.Transitions>
+
+                                <TextBlock Text="{TemplateBinding InternalErrorText}"
+                                           Foreground="{TemplateBinding ErrorForeground}"
+                                           FontSize="12"
+                                           LetterSpacing="0"
+                                           Margin="0,6,0,0"
+                                           TextAlignment="Center"
+                                           TextWrapping="Wrap">
+                                </TextBlock>
+                            </Border>
+
+                        </Grid>
+                    </Border>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="Transitions">
+            <Transitions>
+                <ThicknessTransition Property="Margin" Duration="0:0:0.4" Easing="CubicEaseInOut"/>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.5" Easing="CubicEaseInOut"/>
+                <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" Easing="CubicEaseOut"/>
+            </Transitions>
+        </Setter>
+
+        <Style Selector="^:pointerover /template/ Border#PART_OuterBorder">
+            <Setter Property="RenderTransform" Value="scale(0.98)"/>
+        </Style>
+
+        <Style Selector="^:pointerover, ^:focus">
+            <Setter Property="Background" Value="{StaticResource FirstPlate}"/>
+            <Style Selector="^ /template/ Border#PART_OuterBorder">
+                <Setter Property="RenderTransform" Value="scale(0.98)"/>
+            </Style>
+        </Style>
+    </Style>
+</Styles>

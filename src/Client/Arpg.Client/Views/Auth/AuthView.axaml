@@ -1,0 +1,196 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Arpg.Client.ViewModels.Auth"
+             xmlns:conv="using:Arpg.Client.Views.Auth"
+             xmlns:control="clr-namespace:Arpg.Client.Controls"
+             xmlns:controls="clr-namespace:Arpg.Client.Styles.Controls"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+             x:Class="Arpg.Client.Views.Auth.AuthView"
+             x:DataType="vm:AuthViewModel">
+
+    <Grid Background="{StaticResource FirstPlate}">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                <!-- Card principal -->
+                <Border Name="PART_Card"
+                        Background="White"
+                        BoxShadow="{StaticResource Elevation2}"
+                        Padding="40"
+                        Margin="0,40,0,40"
+                        CornerRadius="20"
+                        Width="330"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        RenderTransformOrigin="50%,50%"
+                        Opacity="0">
+                    <Border.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Opacity" Duration="0:0:0.45" Easing="CubicEaseOut"/>
+                            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.45" Easing="CubicEaseOut"/>
+                        </Transitions>
+                    </Border.Transitions>
+                    <StackPanel x:Name="MainContainer">
+                        <!-- Título ARPG -->
+                        <TextBlock Name="PART_Title"
+                                   Text="ARPG"
+                                   Foreground="{StaticResource FirstPlate}"
+                                   FontSize="75"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   Opacity="0">
+                            <TextBlock.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.35" Easing="CubicEaseOut"/>
+                                </Transitions>
+                            </TextBlock.Transitions>
+                        </TextBlock>
+
+                        <!-- Subtítulo -->
+                        <controls:AnimatedLabel Name="PART_Subtitle"
+                                               Text="{Binding CurrentMode, Converter={x:Static conv:AuthViewModeConverters.Subtitle}}"
+                                               Foreground="{StaticResource FirstPlate}"
+                                               FontSize="14"
+                                               FontWeight="SemiBold"
+                                               LetterSpacing="2"
+                                               Margin="0,-10,0,10"
+                                               HorizontalAlignment="Center"
+                                               Opacity="0">
+                            <controls:AnimatedLabel.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="CubicEaseOut"/>
+                                </Transitions>
+                            </controls:AnimatedLabel.Transitions>
+                        </controls:AnimatedLabel>
+
+                        <controls:NotificationLabel Text="{Binding CurrentMode, Converter={x:Static conv:AuthViewModeConverters.NotificationText}}"
+                                                  Foreground="{StaticResource ThirdText}"
+                                                  FontSize="12"
+                                                  HorizontalAlignment="Center"
+                                                  TargetMargin="0,0,0,-5"/>
+
+                        <!-- Campos do formulário -->
+                        <StackPanel Name="PART_Fields"
+                                    Opacity="0">
+                            <StackPanel.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.35" Easing="CubicEaseOut"/>
+                                </Transitions>
+                            </StackPanel.Transitions>
+
+                            <controls:AnimatedTextBox Text="{Binding Username.Value}"
+                                                 HasError="{Binding Username.Error, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                 Error="{Binding Username.Error}"
+                                                 PlaceholderText="Nome de usuário"
+                                                 IsActive="{Binding !IsValidateMode}"/>
+
+                            <controls:AnimatedTextBox Text="{Binding Email.Value}"
+                                                 HasError="{Binding Email.Error, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                 Error="{Binding Email.Error}"
+                                                 PlaceholderText="E-mail"
+                                                 IsActive="{Binding IsRegisterMode}"/>
+
+                            <controls:AnimatedTextBox Text="{Binding Password.Value}"
+                                                 HasError="{Binding Password.Error, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                 Error="{Binding Password.Error}"
+                                                 PlaceholderText="Senha"
+                                                 PasswordChar="*"
+                                                 RevealPassword="{Binding RevealPassword}"
+                                                 IsActive="{Binding !IsValidateMode}"/>
+
+                            <controls:AnimatedTextBox Text="{Binding ConfirmPassword.Value}"
+                                                 HasError="{Binding ConfirmPassword.Error, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                 Error="{Binding ConfirmPassword.Error}"
+                                                 PlaceholderText="Confirmar senha"
+                                                 PasswordChar="*"
+                                                 RevealPassword="{Binding RevealPassword}"
+                                                 IsActive="{Binding IsRegisterMode}"/>
+                        </StackPanel>
+
+                        <controls:AnimatedBorder Animate="{Binding !IsValidateMode}"
+                                                Background="Transparent"
+                                                TargetPadding="0,0,0,10">
+                            <ToggleButton Classes="RevealToggle"
+                                          IsChecked="{Binding RevealPassword, Mode=TwoWay}"
+                                          HorizontalAlignment="Left"/>
+                        </controls:AnimatedBorder>
+
+                        <controls:AnimatedCodeBox IsActive="{Binding IsValidateMode}"
+                                                 Text="{Binding Code.Value}"
+                                                 HasError="{Binding Code.Error, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                 Error="{Binding Code.Error}"
+                                                 PlaceholderText="000000"
+                                                 TargetMargin="0,10,0,10"/>
+
+                        <controls:AnimatedBorder Animate="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                Background="Transparent"
+                                                TargetPadding="0,0,0,10"
+                                                HorizontalContentAlignment="Center"
+                                                VerticalContentAlignment="Center">
+                            <TextBlock Text="{Binding ErrorMessage}"
+                                        FontSize="14"
+                                        Foreground="{StaticResource FirstWarning}"
+                                        TextWrapping="Wrap"
+                                        FontWeight="SemiBold"
+                                        TextAlignment="Center"
+                                        HorizontalAlignment="Center"/>
+                        </controls:AnimatedBorder>
+
+                        <!-- Separador azul animado (substitui <Separator>) -->
+                        <Border Name="PART_Separator"
+                                Background="{StaticResource FirstPlate}"
+                                Height="1"
+                                MaxWidth="0"
+                                Opacity="0"
+                                HorizontalAlignment="Stretch">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="MaxWidth" Duration="0:0:0.4" Easing="CubicEaseInOut"/>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="CubicEaseOut"/>
+                                </Transitions>
+                            </Border.Transitions>
+                        </Border>
+
+                        <!-- Botões de ação -->
+                        <StackPanel Name="PART_Actions"
+                                    Orientation="Horizontal"
+                                    Spacing="10"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,20,0,0"
+                                    Opacity="0">
+                            <StackPanel.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="CubicEaseOut"/>
+                                </Transitions>
+                            </StackPanel.Transitions>
+
+                            <controls:AnimatedButton Content="{Binding CurrentMode, Converter={x:Static conv:AuthViewModeConverters.SubmitButtonText}}"
+                                                    Command="{Binding SubmitCommand}"
+                                                    Padding="25,15,25,15"
+                                                    CornerRadius="15"
+                                                    IsDefault="True"
+                                                    Background="{StaticResource FirstSuccess}"
+                                                    BackgroundOnHover="{StaticResource FirstElement}"
+                                                    IsEnabled="{Binding !Operation.IsActive}"/>
+
+                            <controls:AnimatedButton Content="{Binding CurrentMode, Converter={x:Static conv:AuthViewModeConverters.ToggleButtonText}}"
+                                                    Command="{Binding ToggleModeCommand}"
+                                                    Padding="25,15,25,15"
+                                                    CornerRadius="15"
+                                                    Background="{StaticResource FirstPlate}"
+                                                    BackgroundOnHover="{StaticResource FirstElement}"
+                                                    IsEnabled="{Binding !Operation.IsActive}"/>
+                        </StackPanel>
+
+                        <controls:AnimatedBorder Animate="{Binding Operation.IsLoading}"
+                                                Background="Transparent"
+                                                TargetPadding="0,15,0,0">
+                            <ProgressBar VerticalAlignment="Bottom"
+                                         IsIndeterminate="True"
+                                         Foreground="{StaticResource FirstElement}"/>
+                        </controls:AnimatedBorder>
+                    </StackPanel>
+                </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>

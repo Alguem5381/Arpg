@@ -1,0 +1,50 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Arpg.Client.Controls"
+        xmlns:controls1="clr-namespace:Arpg.Client.Styles.Controls">
+
+    <Style Selector="controls1|NotificationLabel">
+        <Setter Property="Transitions">
+            <Transitions>
+                <ThicknessTransition Property="Margin" Duration="0:0:0.4" Easing="CubicEaseInOut"/>
+                <DoubleTransition Property="InternalMaxHeight" Duration="0:0:0.6" Easing="QuarticEaseInOut"/>
+                <DoubleTransition Property="InternalOpacity" Duration="0:0:0.4" Easing="CubicEaseInOut"/>
+            </Transitions>
+        </Setter>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+
+                <Grid MaxHeight="{TemplateBinding InternalMaxHeight}"
+                      ClipToBounds="True">
+
+                    <Grid.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="MaxHeight" Duration="0:0:0.6" Easing="QuarticEaseInOut"/>
+                        </Transitions>
+                    </Grid.Transitions>
+
+                    <TextBlock Text="{TemplateBinding DisplayText}"
+                               Opacity="{TemplateBinding InternalOpacity}"
+                               Foreground="{TemplateBinding Foreground}"
+                               FontSize="{TemplateBinding FontSize}"
+                               FontWeight="{TemplateBinding FontWeight}"
+                               HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                               VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center">
+
+                        <TextBlock.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="CubicEaseInOut"/>
+                            </Transitions>
+                        </TextBlock.Transitions>
+
+                    </TextBlock>
+
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+</Styles>

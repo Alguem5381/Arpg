@@ -1,0 +1,131 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Arpg.Client.Controls"
+        xmlns:controls1="clr-namespace:Arpg.Client.Styles.Controls">
+
+    <Style Selector="controls1|AnimatedTextBox">
+        <Setter Property="ErrorForeground" Value="{StaticResource FirstWarning}"/>
+        <Setter Property="OutsideBorderThickness" Value="0"/>
+        <Setter Property="OutsideCornerRadius" Value="10"/>
+        <Setter Property="OutsideBackground" Value="{StaticResource FirstElement}"/>
+        <Setter Property="OutsidePadding" Value="10"/>
+        <Setter Property="WatermarkForeground" Value="{StaticResource ThirdText}"/>
+        <Setter Property="Background" Value="{StaticResource SecondElement}"/>
+        <Setter Property="Foreground" Value="{StaticResource SecondText}"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="FocusAdorner" Value="{x:Null}"/>
+        <Setter Property="RenderTransformOrigin" Value="50%,50%"/>
+        <Setter Property="BackgroundOnHover" Value="{StaticResource FirstPlate}"/>
+        <Setter Property="SelectionBrush" Value="{StaticResource SelectionPlate}"/>
+        <Setter Property="SelectionForegroundBrush" Value="{StaticResource SecondText}"/>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+
+            <Grid MaxHeight="{TemplateBinding InternalMaxHeight}"
+                  ClipToBounds="True">
+
+                <Grid.Transitions>
+                    <Transitions>
+                        <DoubleTransition Property="MaxHeight" Duration="0:0:1.0" Easing="QuarticEaseInOut"/>
+                    </Transitions>
+                </Grid.Transitions>
+
+                <Border Background="Transparent"
+                        Margin="0,0,0,10"
+                        CornerRadius="{TemplateBinding OutsideCornerRadius}">
+
+                    <Border Name="PART_OuterBorder"
+                            Background="{TemplateBinding OutsideBackground}"
+                            CornerRadius="{TemplateBinding OutsideCornerRadius}"
+                            BorderBrush="{TemplateBinding OutsideBorderBrush}"
+                            BorderThickness="{TemplateBinding OutsideBorderThickness}"
+                            Padding="{TemplateBinding OutsidePadding}"
+                            Opacity="{TemplateBinding InternalOpacity}"
+                            ClipToBounds="True">
+
+                        <Border.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.5" Easing="CubicEaseInOut"/>
+                                <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" Easing="CubicEaseOut"/>
+                            </Transitions>
+                        </Border.Transitions>
+
+                        <Grid RowDefinitions="Auto, Auto">
+
+                                <Border Grid.Row="0"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="{TemplateBinding CornerRadius}"
+                                    Padding="{TemplateBinding Padding}"
+                                    Opacity="{TemplateBinding InternalOpacity}">
+
+                                    <Border.Transitions>
+                                        <Transitions>
+                                            <DoubleTransition Property="Opacity" Duration="0:0:0.25" Easing="CubicEaseInOut"/>
+                                        </Transitions>
+                                    </Border.Transitions>
+                                    <Panel>
+                                        <TextBlock Name="PART_Watermark"
+                                                   Text="{TemplateBinding Watermark}"
+                                                   Foreground="{TemplateBinding WatermarkForeground}"
+                                                   IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Left"
+                                                   Opacity="0.7"/>
+                                        <ScrollViewer Name="PART_ScrollViewer"
+                                                      HorizontalScrollBarVisibility="Hidden"
+                                                      VerticalScrollBarVisibility="Hidden">
+                                            <TextPresenter Name="PART_TextPresenter"
+                                                           Text="{TemplateBinding Text, Mode=TwoWay}"
+                                                           CaretIndex="{TemplateBinding CaretIndex}"
+                                                           SelectionStart="{TemplateBinding SelectionStart}"
+                                                           SelectionEnd="{TemplateBinding SelectionEnd}"
+                                                           CaretBrush="{TemplateBinding Foreground}"
+                                                           TextWrapping="NoWrap"
+                                                           PasswordChar="{TemplateBinding PasswordChar}"
+                                                           SelectionBrush="{TemplateBinding SelectionBrush}"
+                                                           SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                                           VerticalAlignment="Center"/>
+                                        </ScrollViewer>
+                                    </Panel>
+                                </Border>
+
+                                <Border Name="PART_ErrorContainer"
+                                        Grid.Row="1"
+                                        ClipToBounds="True"
+                                        Height="{TemplateBinding InternalErrorHeight}"
+                                        Opacity="{TemplateBinding InternalErrorOpacity}">
+
+                                        <Border.Transitions>
+                                            <Transitions>
+                                                <DoubleTransition Property="Height" Duration="0:0:0.3" Easing="CubicEaseInOut"/>
+                                                <DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="CubicEaseInOut"/>
+                                            </Transitions>
+                                        </Border.Transitions>
+
+                                        <TextBlock Text="{TemplateBinding InternalErrorText}"
+                                                   Foreground="{TemplateBinding ErrorForeground}"
+                                                   FontSize="12"
+                                                   Margin="5,6,5,0"
+                                                   TextWrapping="Wrap">
+                                        </TextBlock>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </Border>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover, ^:focus-within">
+            <Setter Property="OutsideBackground" Value="{Binding BackgroundOnHover, RelativeSource={RelativeSource Self}}"/>
+            <Style Selector="^ /template/ Border#PART_OuterBorder">
+                <Setter Property="RenderTransform" Value="scale(0.98)"/>
+            </Style>
+        </Style>
+    </Style>
+</Styles>

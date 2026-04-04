@@ -1,0 +1,87 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Arpg.Client.Controls"
+        xmlns:controls1="clr-namespace:Arpg.Client.Styles.Controls">
+
+    <Style Selector="controls1|AnimatedButton">
+        <Setter Property="Background" Value="{StaticResource FirstElement}"/>
+        <Setter Property="FocusAdorner" Value="{x:Null}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="CornerRadius" Value="15"/>
+        <Setter Property="Padding" Value="25,15,25,15"/>
+        <Setter Property="BackgroundOnHover" Value="{StaticResource SecondElement}"/>
+        <Setter Property="RenderTransformOrigin" Value="50%,50%"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="Transparent"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Border Name="PART_OuterBorder" 
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}"
+                            RenderTransform="{TemplateBinding RenderTransform}">
+
+                        <Border.Transitions>
+                            <Transitions>
+                                <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" Easing="CubicEaseOut"/>
+                            </Transitions>
+                        </Border.Transitions>
+
+                        <ContentPresenter Content="{TemplateBinding DisplayContent}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Opacity="{TemplateBinding InternalOpacity}"
+                                          RenderTransformOrigin="50%,50%">
+
+                                          <ContentPresenter.RenderTransform>
+                                                <ScaleTransform ScaleX="{Binding InternalOpacity, RelativeSource={RelativeSource TemplatedParent}}" 
+                                                                ScaleY="{Binding InternalOpacity, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                          </ContentPresenter.RenderTransform>
+
+                                          <ContentPresenter.Transitions>
+                                                <Transitions>
+                                                    <DoubleTransition Property="Opacity" Duration="0:0:0.4" Easing="CubicEaseInOut"/>
+                                                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="BackEaseOut"/>
+                                                </Transitions>
+                                          </ContentPresenter.Transitions>
+                        </ContentPresenter>
+
+                    </Border>
+                </Border>
+
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="CubicEaseInOut"/>
+            </Transitions>
+        </Setter>
+
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{Binding BackgroundOnHover, RelativeSource={RelativeSource Self}}"/>
+            <Style Selector="^ /template/ Border#PART_OuterBorder">
+                <Setter Property="RenderTransform" Value="scale(0.96)"/>
+            </Style>
+        </Style>
+
+        <Style Selector="^:pressed /template/ Border#PART_OuterBorder">
+            <Setter Property="RenderTransform" Value="scale(0.92)"/>
+        </Style>
+
+        <Style Selector="^:focus-visible /template/ Border#PART_OuterBorder">
+            <Setter Property="BorderBrush" Value="{StaticResource ThirdPlate}"/>
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="0.5"/>
+        </Style>
+    </Style>
+</Styles>

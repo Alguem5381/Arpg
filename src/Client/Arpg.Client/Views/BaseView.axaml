@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Arpg.Client.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Arpg.Client.Views.BaseView"
+             x:DataType="vm:RootViewModel">
+
+    <ScrollViewer Name="PART_ScrollViewer"
+                  Classes="Minimal"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch">
+        <Grid MinHeight="{Binding #PART_ScrollViewer.Viewport.Height}"
+              RowDefinitions="*, Auto">
+            <TransitioningContentControl Grid.Row="0"
+                                         Content="{Binding NavigationServices.CurrentViewModel}" />
+
+            <!-- Spacer invisível para o teclado virtual -->
+            <Rectangle Grid.Row="1"
+                       Name="PART_KeyboardSpacer"
+                       Height="0"
+                       Fill="Transparent"
+                       IsHitTestVisible="False">
+                <Rectangle.Transitions>
+                    <Transitions>
+                        <DoubleTransition Property="Height" Duration="0:0:0.3" Easing="CubicEaseOut"/>
+                    </Transitions>
+                </Rectangle.Transitions>
+            </Rectangle>
+        </Grid>
+    </ScrollViewer>
+
+</UserControl>

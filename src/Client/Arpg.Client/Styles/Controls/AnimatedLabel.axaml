@@ -1,0 +1,27 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Arpg.Client.Controls"
+        xmlns:controls1="clr-namespace:Arpg.Client.Styles.Controls">
+
+    <Style Selector="controls1|AnimatedLabel">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <TextBlock Text="{TemplateBinding DisplayText}"
+                           Opacity="{TemplateBinding InternalOpacity}"
+                           Foreground="{TemplateBinding Foreground}"
+                           FontSize="{TemplateBinding FontSize}"
+                           FontWeight="{TemplateBinding FontWeight}"
+                           LetterSpacing="{TemplateBinding LetterSpacing}"
+                           HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                           VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                    <TextBlock.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="CubicEaseInOut"/>
+                        </Transitions>
+                    </TextBlock.Transitions>
+                </TextBlock>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+</Styles>
