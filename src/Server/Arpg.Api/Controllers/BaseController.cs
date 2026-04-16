@@ -12,12 +12,12 @@ namespace Arpg.Api.Controllers;
 [Authorize]
 public class BaseController : ControllerBase
 {
-    protected IActionResult ToFailResults(ResultBase result)
+    protected IActionResult ToFailResults(ResultBase result, bool isUnprocessableEntity = false)
     {
         var response = new ErrorResponseDto([.. result.Errors.Select(e => new ErrorDto(e.Message, e.GetCode(), e.Metadata))]);
 
         if (result.Errors.Count > 1)
-            return BadRequest(response);
+            return isUnprocessableEntity ? UnprocessableEntity(response) : BadRequest(response);
 
         var firstError = result.Errors[0];
 

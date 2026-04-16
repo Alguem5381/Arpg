@@ -5,22 +5,22 @@ namespace Arpg.Core.Models.Customer;
 public class Account
 {
     public Guid Id { get; } = Guid.NewGuid();
-    public Guid UserId { get; init; }
-    public string Username { get; set; } = string.Empty;
+    public Guid OwnerId { get; init; }
     public string Email { get; init; } = string.Empty;
     public int FailedLoginAttempts { get; private set; }
     public DateTime? LockoutEnd { get; private set; }
 
     public bool IsValid { get; set; }
     public string PasswordHash { get; private set; } = string.Empty;
-    
+
     public List<Code> Codes { get; } = [];
-    
+
 
     public Account() { }
-    public Account(Guid userId)
+    public Account(Guid userId, string email)
     {
-        UserId = userId;
+        OwnerId = userId;
+        Email = email;
     }
 
     public void SetInitialPassword(string password, IPasswordHasher hasher)
@@ -44,7 +44,7 @@ public class Account
     public void RecordFailedLogin()
     {
         FailedLoginAttempts++;
-        int minutesToLock = (int)Math.Pow(2, FailedLoginAttempts); // 2, 4, 8, 16, 32... minutes
+        int minutesToLock = (int)Math.Pow(2, FailedLoginAttempts);
         LockoutEnd = DateTime.UtcNow.AddMinutes(minutesToLock);
     }
 

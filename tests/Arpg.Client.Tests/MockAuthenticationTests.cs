@@ -1,7 +1,7 @@
 using Xunit;
 using Arpg.Tests.Mocks;
 
-namespace Arpg.Tests.Unit;
+namespace Arpg.Client.Tests;
 
 public class MockAuthenticationTests
 {

@@ -9,10 +9,21 @@ namespace Arpg.Infrastructure.Queries;
 public class TemplateQueries(AppDbContext db) : ITemplateQueries
 {
     private readonly TemplateMapper _templateMapper = new();
-    public async Task<List<FlatTemplateDto>> GetFlatTemplatesAsync(Guid ownerId)
+
+    public async Task<List<SimpleTemplateDto>> GetListAsync(Guid ownerId)
         => await db.Templates
             .AsNoTracking()
             .Where(t => t.OwnerId == ownerId && !t.IsArchived)
-            .Select(t => new FlatTemplateDto(t.Id,  t.Name, t.Description, t.CreationTime))
+            .Select(t => new SimpleTemplateDto(t.Id, t.Name, t.Description, t.CreationTime))
             .ToListAsync();
+
+    public async Task<TemplateDto?> GetTemplate(Guid id, Guid ownerId)
+    {
+        var template = await db.Templates
+            .AsNoTracking()
+            .Where(t => t.Id == id && t.OwnerId == ownerId)
+            .FirstOrDefaultAsync();
+
+        return template == null ? null : _templateMapper.TemplateToTemplateDto(template);
+    }
 }

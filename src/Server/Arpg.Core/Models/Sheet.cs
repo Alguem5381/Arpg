@@ -46,8 +46,10 @@ public class Sheet
 
             if (!TypeChecker.IsValueValidForType(valueToProcess, field.Type))
             {
-                errors.Add(new InvalidFieldError($"Value for '{field.Name}' is invalid type.", field.Id, field.CategoryId)
-                    .WithMetadata(MetadataKey.Error, StructureCodes.FieldAndTypeMismatch));
+                errors.Add(new ValidationError($"Value for '{field.Name}' is invalid type.")
+                    .WithMetadata(MetadataKey.Error, StructureCodes.FieldAndTypeMismatch)
+                    .WithMetadata(MetadataKey.Category, field.CategoryId)
+                    .WithMetadata(MetadataKey.Field, field.Id));
                 continue;
             }
 

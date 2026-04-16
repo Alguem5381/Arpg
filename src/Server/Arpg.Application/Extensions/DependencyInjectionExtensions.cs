@@ -15,15 +15,14 @@ public static class DependencyInjectionExtensions
         public IServiceCollection ApplicationConfigurations()
         {
             collection.AddValidatorsFromAssemblyContaining<CreateDtoValidator>();
-            
-            collection.AddSingleton<ExpressionResolver>();
+
             collection.AddScoped<SheetServices>();
             collection.AddScoped<StructureServices>();
             collection.AddScoped<TemplateServices>();
             collection.AddScoped<UserServices>();
             collection.AddScoped<AccountServices>();
             collection.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
-            
+
             return collection;
         }
     }
