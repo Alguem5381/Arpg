@@ -13,15 +13,18 @@ using FluentResults;
 
 namespace Arpg.Application.Services;
 
-public class StructureServices(
+public class StructureServices
+(
     IUnitOfWork unitOfWork,
     IUserContext userContext,
-    ITemplateRepository templateRepository)
+    ITemplateRepository templateRepository
+)
 {
     private readonly StructureMapper _structureMapper = new();
+
     public async Task<Result> UpdateStructureAsync(BatchUpdateDto batch)
     {
-        var template = await templateRepository.GetTemplateById(batch.TemplateId, userContext.Id);
+        var template = await templateRepository.GetAsync(batch.TemplateId, userContext.Id);
 
         if (template is null)
             return Result.Fail(new NotFoundError("Template not found.")

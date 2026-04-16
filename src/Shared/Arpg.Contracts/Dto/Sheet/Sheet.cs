@@ -1,9 +1,9 @@
 namespace Arpg.Contracts.Dto.Sheet;
 
-public record SheetCreateDto(string Name, Guid TemplateId);
-public record SheetEditDto(Guid Id, string Name);
-public record ComputeSheetDto(Guid Id, Dictionary<Guid, object?> Data);
-public record SheetListDto(Guid Id, string Name);
+public record CreateDto(string Name, Guid TemplateId);
+public record EditDto(Guid Id, string Name);
+public record ComputeDto(Guid Id, Dictionary<Guid, object?> Data);
+public record SimpleSheetDto(Guid Id, string Name);
 public record SheetDto
 (
     Guid Id,

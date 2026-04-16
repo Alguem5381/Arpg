@@ -1,28 +1,44 @@
 using Arpg.Application.Auth;
+using Arpg.Application.Extensions;
 using Arpg.Application.Mapper;
 using Arpg.Application.Queries;
 using Arpg.Application.Repositories;
+
 using Arpg.Contracts.Dto.Sheet;
+
 using Arpg.Primitives.Codes;
 using Arpg.Primitives.Constants;
 using Arpg.Primitives.Results;
+
 using FluentResults;
+using FluentValidation;
 
 namespace Arpg.Application.Services;
 
 public class SheetServices
-    (
-        IUnitOfWork unitOfWork,
-        IUserContext userContext,
-        ISheetQueries sheetQueries,
-        ISheetRepository sheetRepository,
-        ITemplateRepository templateRepository
-    )
+(
+    IUnitOfWork unitOfWork,
+
+    IUserContext userContext,
+
+    ISheetRepository sheetRepository,
+    ITemplateRepository templateRepository,
+
+    IValidator<CreateDto> createValidator,
+    IValidator<EditDto> editValidator,
+    IValidator<ComputeDto> computeValidator
+)
 {
     private readonly SheetMapper _sheetMapper = new();
-    public async Task<Result<Guid>> Create(SheetCreateDto dto)
+
+    public async Task<Result<Guid>> CreateAsync(CreateDto dto)
     {
-        var template = await templateRepository.GetTemplateById(dto.TemplateId);
+        var validation = await createValidator.ValidateAsync(dto);
+
+        if (!validation.IsValid)
+            return validation.ToResult();
+
+        var template = await templateRepository.GetAsync(dto.TemplateId);
 
         if (template == null)
             return Result.Fail(new NotFoundError("Template not found.")
@@ -43,28 +59,20 @@ public class SheetServices
         return Result.Ok(sheet.Id);
     }
 
-    public async Task<Result<SheetDto>> GetAsync(Guid id)
+    public async Task<Result> ComputeDataAsync(ComputeDto dto)
     {
-        var sheet = await sheetRepository.GetSheetReadOnlyAsync(id, userContext.Id);
+        var validation = await computeValidator.ValidateAsync(dto);
 
-        if (sheet == null)
-            return Result.Fail(new NotFoundError("Sheet not found.")
-                .WithMetadata(MetadataKey.Error, SheetCodes.SheetNotFound));
+        if (!validation.IsValid)
+            return validation.ToResult();
 
-        var sheetDto = _sheetMapper.SheetToSheetDto(sheet);
-
-        return Result.Ok(sheetDto);
-    }
-
-    public async Task<Result> ComputeDataAsync(ComputeSheetDto dto)
-    {
         var sheet = await sheetRepository.GetSheetAsync(dto.Id, userContext.Id);
 
         if (sheet == null)
             return Result.Fail(new NotFoundError("Sheet not found.")
                 .WithMetadata(MetadataKey.Error, SheetCodes.SheetNotFound));
 
-        var template = await templateRepository.GetTemplateById(sheet.TemplateId);
+        var template = await templateRepository.GetAsync(sheet.TemplateId);
 
         if (template == null)
             return Result.Fail(new ValidationError("Template not found.")
@@ -80,8 +88,13 @@ public class SheetServices
         return Result.Ok();
     }
 
-    public async Task<Result<SheetDto>> EditAsync(SheetEditDto dto)
+    public async Task<Result<SheetDto>> EditAsync(EditDto dto)
     {
+        var validation = await editValidator.ValidateAsync(dto);
+
+        if (!validation.IsValid)
+            return validation.ToResult();
+
         var sheet = await sheetRepository.GetSheetAsync(dto.Id, userContext.Id);
 
         if (sheet == null)
@@ -92,15 +105,7 @@ public class SheetServices
 
         await unitOfWork.CommitAsync();
 
-        var sheetDto = _sheetMapper.SheetToSheetDto(sheet);
-
-        return Result.Ok(sheetDto);
-    }
-
-    public async Task<Result<List<SheetListDto>>> GetListAsync()
-    {
-        var sheets = await sheetQueries.GetSoftSheetListAsync(userContext.Id);
-        return Result.Ok(sheets);
+        return Result.Ok(_sheetMapper.SheetToSheetDto(sheet));
     }
 
     public async Task<Result> DeleteAsync(Guid id)

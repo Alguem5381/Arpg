@@ -5,7 +5,7 @@ public record NewDto(string Username, string Email, string Password, string Conf
 public record EditDto(string DisplayName);
 public record DeleteDto(string Password);
 public record SuccessLoginDto(string Message, string Token);
-public record InformationDto(string DisplayName, string Username);
+public record UserInformationDto(string DisplayName, string Username);
 public record UserDto(string DisplayName, string Username);
 public record CodeDto(Guid Key);
 public record ValidateCodeDto(Guid Key, string Value);

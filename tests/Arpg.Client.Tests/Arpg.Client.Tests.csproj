@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Arpg.Client\Arpg.Client\Arpg.Client.csproj" />
     <ProjectReference Include="..\..\src\Client\Arpg.Client\Arpg.Client.csproj" />
     <ProjectReference Include="..\..\src\Shared\Arpg.Contracts\Arpg.Contracts.csproj" />
     <ProjectReference Include="..\Arpg.Tests.Mocks\Arpg.Tests.Mocks.csproj" />

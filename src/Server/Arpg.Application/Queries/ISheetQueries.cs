@@ -1,10 +1,10 @@
-using Arpg.Application.Repositories;
 using Arpg.Contracts.Dto.Sheet;
-using Arpg.Core.Models;
 
 namespace Arpg.Application.Queries;
 
-public interface ISheetQueries : IRepository<Sheet>
+public interface ISheetQueries
 {
-    Task<List<SheetListDto>> GetSoftSheetListAsync(Guid ownerId);
+    Task<SheetDto?> GetSheetDtoAsync(Guid id, Guid ownerId);
+    Task<List<SimpleSheetDto>> GetSimpleListAsync(Guid ownerId);
+    Task<bool> AnyByTemplate(Guid templateId);
 }

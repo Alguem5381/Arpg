@@ -2,7 +2,6 @@ using Arpg.Application.Abstractions;
 using Arpg.Application.Extensions;
 using Arpg.Application.Mapper;
 using Arpg.Application.Repositories;
-using Arpg.Contracts.Dto.General;
 using Arpg.Contracts.Dto.User;
 using Arpg.Core.Interfaces.Security;
 using Arpg.Core.Models.Customer;
@@ -18,13 +17,20 @@ public class AccountServices
     (
         ITokenServices tokenServices,
         IEmailServices emailServices,
+
+        IUserContext userContext,
+
         IUserRepository userRepository,
         ICodeRepository codeRepository,
         IAccountRepository accountRepository,
+
         IPasswordHasher passwordHasher,
+
         IValidator<NewDto> newDtoValidator,
         IValidator<LoginDto> loginDtoValidator,
         IValidator<ValidateCodeDto> validateCodeDtoValidator,
+        IValidator<DeleteDto> deleteDtoValidator,
+
         IUnitOfWork unitOfWork
     )
 {
@@ -49,22 +55,18 @@ public class AccountServices
                 .WithMetadata("PropertyPath", nameof(NewDto.Email)));
 
         var user = _userMapper.NewDtoToUser(dto);
-        var account = new Account(user.Id)
-        {
-            Username = dto.Username,
-            Email = dto.Email
-        };
+        var account = new Account(user.Id, dto.Email);
 
         account.SetInitialPassword(dto.Password, passwordHasher);
 
-        userRepository.Add(user);
-        accountRepository.Add(account);
-
         var code = GenerateCode(account);
 
-        await emailServices.SendCodeVerificationEmailAsync(dto.Email, code.Value.ToString());
-
+        userRepository.Add(user);
+        accountRepository.Add(account);
+        
         await unitOfWork.CommitAsync();
+
+        await emailServices.SendCodeVerificationEmailAsync(dto.Email, code.Value);
 
         return Result.Ok(_accountMapper.CodeToCodeDto(code));
     }
@@ -75,7 +77,7 @@ public class AccountServices
         if (!validation.IsValid)
             return validation.ToResult();
 
-        var account = await accountRepository.GetReadOnlyAsync(dto.Username);
+        var account = await accountRepository.GetAsync(dto.Username);
 
         if (account is null)
             return Result.Fail(new UnauthorizedError("Invalid credentials")
@@ -83,7 +85,7 @@ public class AccountServices
 
         if (account.IsLockedOut())
             return Result.Fail(new UnauthorizedError("Account is temporarily locked out due to multiple failed login attempts.")
-                .WithMetadata(MetadataKey.Error, UserCodes.InvalidCredentials));
+                .WithMetadata(MetadataKey.Error, UserCodes.AccountLocked));
 
         if (!account.PasswordMatches(dto.Password, passwordHasher))
         {
@@ -95,16 +97,11 @@ public class AccountServices
 
         account.ResetFailedLogins();
 
-        var user = await userRepository.GetAsync(account.UserId);
-
-        if (user is null)
-            return Result.Fail(new UnauthorizedError("Invalid credentials")
-                .WithMetadata(MetadataKey.Error, UserCodes.InvalidCredentials));
-
         var code = GenerateCode(account);
-        await emailServices.SendCodeVerificationEmailAsync(account.Email, code.Value.ToString());
 
         await unitOfWork.CommitAsync();
+
+        await emailServices.SendCodeVerificationEmailAsync(account.Email, code.Value);
 
         return Result.Ok(_accountMapper.CodeToCodeDto(code));
     }
@@ -130,20 +127,14 @@ public class AccountServices
         var code = await codeRepository.GetCode(dto.Key);
 
         if (code == null)
-            return Result.Fail(new UnprocessableEntityError("Code not found")
+            return Result.Fail(new NotFoundError("Code not found")
                 .WithMetadata(MetadataKey.Error, CodeCodes.CodeNotFound));
 
-        if (code.Value != dto.Value)
-            return Result.Fail(new UnprocessableEntityError("Invalid code")
+        if (code.Value != dto.Value || code.Key != dto.Key)
+            return Result.Fail(new UnauthorizedError("Invalid code")
                 .WithMetadata(MetadataKey.Error, CodeCodes.InvalidCode));
 
-        var account = await accountRepository.GetAsync(code.OwnerId);
-
-        if (account == null)
-            return Result.Fail(new UnprocessableEntityError("Cannot solve this code")
-                .WithMetadata(MetadataKey.Error, GeneralCodes.NotFound));
-
-        var user = await userRepository.GetAsync(account.UserId);
+        var user = await userRepository.GetAsync(code.OwnerId);
 
         if (user == null)
             return Result.Fail(new UnprocessableEntityError("Cannot solve this code")
@@ -152,6 +143,31 @@ public class AccountServices
         codeRepository.Delete(code);
         await unitOfWork.CommitAsync();
 
-        return tokenServices.GenerateToken(user, account.Username);
+        return tokenServices.GenerateToken(user, user.Username);
+    }
+
+    public async Task<Result> DeleteAsync(DeleteDto dto)
+    {
+        var validation = await deleteDtoValidator.ValidateAsync(dto);
+        if (!validation.IsValid)
+            return validation.ToResult();
+
+        var account = await accountRepository.GetOwnerAsync(userContext.Id);
+
+        if (account == null || !account.PasswordMatches(dto.Password, passwordHasher))
+            return Result.Fail(new UnprocessableEntityError("Invalid credentials.")
+                .WithMetadata(MetadataKey.Error, UserCodes.InvalidCredentials));
+
+        var user = await userRepository.GetAsync(userContext.Id);
+
+        if (user == null)
+            return Result.Fail(new NotFoundError("User not found.")
+                .WithMetadata(MetadataKey.Error, UserCodes.UserNotFound));
+
+        accountRepository.Delete(account);
+        userRepository.Delete(user);
+        await unitOfWork.CommitAsync();
+
+        return Result.Ok();
     }
 }

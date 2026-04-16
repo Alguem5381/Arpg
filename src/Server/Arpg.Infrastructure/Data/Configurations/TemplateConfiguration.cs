@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Arpg.Core.Models.Customer;
 using Arpg.Core.Models.Definitions;
 using Arpg.Infrastructure.Converters;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,11 @@ public class TemplateConfiguration : IEntityTypeConfiguration<Template>
 {
     public void Configure(EntityTypeBuilder<Template> builder)
     {
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(template => template.OwnerId)
+            .IsRequired();
+
         builder.OwnsOne(template => template.Structure, owned =>
         {
             owned.ToJson();

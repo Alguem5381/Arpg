@@ -1,5 +1,4 @@
 using Arpg.Contracts.Dto.User;
-using Arpg.Core.Models;
 using Arpg.Core.Models.Customer;
 using Riok.Mapperly.Abstractions;
 
@@ -14,4 +13,9 @@ public partial class UserMapper
     [MapperIgnoreSource(nameof(NewDto.Email))]
     public partial User NewDtoToUser(NewDto dto);
 
+    [MapperIgnoreSource(nameof(User.Id))]
+    public partial UserInformationDto UserToUserInformationDto(User user);
+
+    [MapperIgnoreSource(nameof(User.Id))]
+    public partial UserDto UserToUserDto(User user);
 }

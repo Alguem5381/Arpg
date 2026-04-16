@@ -17,16 +17,9 @@ public class AccountConfiguration : IEntityTypeConfiguration<Account>
         builder.HasIndex(account => account.Email)
             .IsUnique();
 
-        builder.Property(account => account.Username)
-            .IsRequired()
-            .HasMaxLength(50);
-
-        builder.HasIndex(account => account.Username)
-            .IsUnique();
-
         builder.HasOne<User>()
             .WithOne()
-            .HasForeignKey<Account>(account => account.UserId)
+            .HasForeignKey<Account>(account => account.OwnerId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
