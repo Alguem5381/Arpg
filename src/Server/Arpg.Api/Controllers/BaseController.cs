@@ -1,7 +1,5 @@
-using Arpg.Api.Extensions;
 using Arpg.Contracts.Dto.General;
 using Arpg.Primitives.Results;
-using FluentResults;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,7 +12,8 @@ public class BaseController : ControllerBase
 {
     protected IActionResult ToFailResults(ResultBase result, bool isUnprocessableEntity = false)
     {
-        var response = new ErrorResponseDto([.. result.Errors.Select(e => new ErrorDto(e.Message, e.GetCode(), e.Metadata))]);
+        var response =
+            new ErrorResponseDto(result.Errors.Select(e => new ErrorDto(e.Message, e.GetCode(), e.Metadata)).ToList());
 
         if (result.Errors.Count > 1)
             return isUnprocessableEntity ? UnprocessableEntity(response) : BadRequest(response);

@@ -1,47 +1,40 @@
 using Arpg.Application.Abstractions;
-using Arpg.Application.Extensions;
 using Arpg.Application.Mapper;
 using Arpg.Application.Repositories;
+using Arpg.Application.Services;
 using Arpg.Contracts.Dto.User;
 using Arpg.Core.Interfaces.Security;
 using Arpg.Core.Models.Customer;
 using Arpg.Primitives.Codes;
 using Arpg.Primitives.Constants;
 using Arpg.Primitives.Results;
-using FluentResults;
 using FluentValidation;
 
 namespace Arpg.Application.Auth;
 
-public class AccountServices
-    (
-        ITokenServices tokenServices,
-        IEmailServices emailServices,
-
-        IUserContext userContext,
-
-        IUserRepository userRepository,
-        ICodeRepository codeRepository,
-        IAccountRepository accountRepository,
-
-        IPasswordHasher passwordHasher,
-
-        IValidator<NewDto> newDtoValidator,
-        IValidator<LoginDto> loginDtoValidator,
-        IValidator<ValidateCodeDto> validateCodeDtoValidator,
-        IValidator<DeleteDto> deleteDtoValidator,
-
-        IUnitOfWork unitOfWork
-    )
+public class AccountServices(
+    ITokenServices tokenServices,
+    IEmailServices emailServices,
+    IUserContext userContext,
+    IUserRepository userRepository,
+    ICodeRepository codeRepository,
+    IAccountRepository accountRepository,
+    IPasswordHasher passwordHasher,
+    IValidator<NewDto> newDtoValidator,
+    IValidator<LoginDto> loginDtoValidator,
+    IValidator<ValidateCodeDto> validateCodeDtoValidator,
+    IValidator<DeleteDto> deleteDtoValidator,
+    IUnitOfWork unitOfWork
+) : BaseService
 {
     private readonly UserMapper _userMapper = new();
     private readonly AccountMapper _accountMapper = new();
 
     public async Task<Result<CodeDto>> NewAsync(NewDto dto)
     {
-        var validation = await newDtoValidator.ValidateAsync(dto);
-        if (!validation.IsValid)
-            return validation.ToResult();
+        var validation = Validate(newDtoValidator, dto);
+        if (validation.IsFailed)
+            return validation;
 
         if (await accountRepository.AnyAsync(dto.Username))
             return Result.Fail(new ConflictError("Username already exists.")
@@ -63,7 +56,7 @@ public class AccountServices
 
         userRepository.Add(user);
         accountRepository.Add(account);
-        
+
         await unitOfWork.CommitAsync();
 
         await emailServices.SendCodeVerificationEmailAsync(dto.Email, code.Value);
@@ -73,9 +66,9 @@ public class AccountServices
 
     public async Task<Result<CodeDto>> LoginAsync(LoginDto dto)
     {
-        var validation = await loginDtoValidator.ValidateAsync(dto);
-        if (!validation.IsValid)
-            return validation.ToResult();
+        var validation = Validate(loginDtoValidator, dto);
+        if (validation.IsFailed)
+            return validation;
 
         var account = await accountRepository.GetAsync(dto.Username);
 
@@ -84,8 +77,9 @@ public class AccountServices
                 .WithMetadata(MetadataKey.Error, UserCodes.InvalidCredentials));
 
         if (account.IsLockedOut())
-            return Result.Fail(new UnauthorizedError("Account is temporarily locked out due to multiple failed login attempts.")
-                .WithMetadata(MetadataKey.Error, UserCodes.AccountLocked));
+            return Result.Fail(
+                new UnauthorizedError("Account is temporarily locked out due to multiple failed login attempts.")
+                    .WithMetadata(MetadataKey.Error, UserCodes.AccountLocked));
 
         if (!account.PasswordMatches(dto.Password, passwordHasher))
         {
@@ -120,9 +114,9 @@ public class AccountServices
 
     public async Task<Result<string>> ValidateCode(ValidateCodeDto dto)
     {
-        var validation = await validateCodeDtoValidator.ValidateAsync(dto);
-        if (!validation.IsValid)
-            return validation.ToResult();
+        var validation = Validate(validateCodeDtoValidator, dto);
+        if (validation.IsFailed)
+            return validation;
 
         var code = await codeRepository.GetCode(dto.Key);
 
@@ -148,9 +142,9 @@ public class AccountServices
 
     public async Task<Result> DeleteAsync(DeleteDto dto)
     {
-        var validation = await deleteDtoValidator.ValidateAsync(dto);
-        if (!validation.IsValid)
-            return validation.ToResult();
+        var validation = Validate(deleteDtoValidator, dto);
+        if (validation.IsFailed)
+            return validation;
 
         var account = await accountRepository.GetOwnerAsync(userContext.Id);
 

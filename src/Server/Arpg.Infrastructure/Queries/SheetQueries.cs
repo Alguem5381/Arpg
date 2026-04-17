@@ -8,11 +8,10 @@ namespace Arpg.Infrastructure.Queries;
 
 public class SheetQueries(AppDbContext db) : ISheetQueries
 {
-    private readonly AppDbContext _db = db;
     private readonly SheetMapper _sheetMapper = new();
 
     public async Task<List<SimpleSheetDto>> GetSimpleListAsync(Guid ownerId)
-        => await _db.Sheets
+        => await db.Sheets
             .AsNoTracking()
             .Where(s => s.OwnerId == ownerId)
             .Select(s => new SimpleSheetDto
@@ -23,13 +22,13 @@ public class SheetQueries(AppDbContext db) : ISheetQueries
             .ToListAsync();
 
     public async Task<bool> AnyByTemplate(Guid templateId)
-        => await _db.Sheets
+        => await db.Sheets
             .Where(s => s.TemplateId == templateId)
             .AnyAsync();
 
     public async Task<SheetDto?> GetSheetDtoAsync(Guid id, Guid ownerId)
     {
-        var sheet = await _db.Sheets
+        var sheet = await db.Sheets
             .AsNoTracking()
             .FirstOrDefaultAsync(s => s.Id == id && s.OwnerId == ownerId);
 

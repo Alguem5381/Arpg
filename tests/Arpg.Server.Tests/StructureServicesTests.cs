@@ -5,7 +5,6 @@ using Arpg.Contracts.Dto.Structure;
 using Arpg.Core.Models.Definitions;
 using Arpg.Primitives.Enums.Template;
 using FluentAssertions;
-using FluentValidation;
 using Moq;
 
 namespace Arpg.Server.Tests;
@@ -15,7 +14,7 @@ public class StructureServicesTests
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<IUserContext> _userContextMock;
     private readonly Mock<ITemplateRepository> _templateRepositoryMock;
-    
+
     private readonly StructureServices _sut;
 
     public StructureServicesTests()
@@ -36,7 +35,7 @@ public class StructureServicesTests
     {
         var dto = new BatchUpdateDto();
         var userId = Guid.NewGuid();
-        
+
         _userContextMock.Setup(x => x.Id).Returns(userId);
         _templateRepositoryMock.Setup(x => x.GetAsync(dto.TemplateId, userId)).ReturnsAsync((Template?)null);
 
@@ -59,24 +58,28 @@ public class StructureServicesTests
             },
             Fields = new List<FieldOpDto>
             {
-                new FieldOpDto { Id = Guid.NewGuid(), CategoryId = categoryId, Op = Operation.Add, Name = "Strength", Type = FieldType.Number }
+                new FieldOpDto
+                {
+                    Id = Guid.NewGuid(), CategoryId = categoryId, Op = Operation.Add, Name = "Strength",
+                    Type = FieldType.Number
+                }
             }
         };
-        
+
         var userId = Guid.NewGuid();
         var template = new Template { Id = dto.TemplateId, OwnerId = userId };
-        
+
         _userContextMock.Setup(x => x.Id).Returns(userId);
         _templateRepositoryMock.Setup(x => x.GetAsync(dto.TemplateId, userId)).ReturnsAsync(template);
 
         var result = await _sut.UpdateStructureAsync(dto);
 
         result.IsSuccess.Should().BeTrue();
-        
+
         // Assert that the internal core logic of TemplateStructure worked properly via the Domain Models.
         template.Structure.Categories.Should().ContainSingle(c => c.Name == "Basic Category");
         template.Structure.Fields.Should().ContainSingle(f => f.Name == "Strength");
-        
+
         _unitOfWorkMock.Verify(x => x.CommitAsync(), Times.Once);
     }
 }

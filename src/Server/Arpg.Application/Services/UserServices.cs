@@ -1,31 +1,28 @@
 using Arpg.Application.Auth;
-using Arpg.Application.Extensions;
 using Arpg.Application.Mapper;
 using Arpg.Application.Repositories;
 using Arpg.Contracts.Dto.User;
 using Arpg.Primitives.Codes;
 using Arpg.Primitives.Constants;
 using Arpg.Primitives.Results;
-using FluentResults;
 using FluentValidation;
 
 namespace Arpg.Application.Services;
 
-public class UserServices
-(
+public class UserServices(
     IUnitOfWork unitOfWork,
     IUserRepository userRepository,
     IUserContext userContext,
     IValidator<EditDto> editDtoValidator
-)
+) : BaseService
 {
     private readonly UserMapper _userMapper = new();
 
     public async Task<Result<UserDto>> EditAsync(EditDto dto)
     {
-        var validation = await editDtoValidator.ValidateAsync(dto);
-        if (!validation.IsValid)
-            return validation.ToResult();
+        var validation = Validate(editDtoValidator, dto);
+        if (validation.IsFailed)
+            return validation;
 
         var user = await userRepository.GetAsync(userContext.Id);
 

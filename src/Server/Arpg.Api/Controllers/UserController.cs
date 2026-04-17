@@ -1,20 +1,17 @@
 using Arpg.Application.Auth;
 using Arpg.Application.Services;
-
 using Arpg.Contracts.Dto.General;
 using Arpg.Contracts.Dto.User;
 using Arpg.Infrastructure.Queries;
 using Arpg.Primitives.Codes;
 using Arpg.Primitives.Constants;
 using Arpg.Primitives.Results;
-using FluentResults;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Arpg.Api.Controllers;
 
-public class UserController
-(
+public class UserController(
     UserServices userServices,
     AccountServices accountServices,
     UserQueries userQueries,
@@ -80,7 +77,9 @@ public class UserController
     {
         var result = await accountServices.ValidateCode(request);
 
-        return result.IsFailed ? ToFailResults(result) : Ok(new SuccessLoginDto("Logged in successfully.", result.Value));
+        return result.IsFailed
+            ? ToFailResults(result)
+            : Ok(new SuccessLoginDto("Logged in successfully.", result.Value));
     }
 
     /// <summary>
@@ -100,7 +99,7 @@ public class UserController
 
         if (user == null)
             return ToFailResults(Result.Fail(new NotFoundError("Username not found.")
-                    .WithMetadata(MetadataKey.Error, UserCodes.UserNotFound)));
+                .WithMetadata(MetadataKey.Error, UserCodes.UserNotFound)));
 
         return Ok(user);
     }
@@ -143,7 +142,9 @@ public class UserController
     {
         var result = await userServices.EditAsync(request);
 
-        return result.IsFailed ? ToFailResults(result) : Ok(new SuccessDto($"Name change successfully to {result.Value.DisplayName}."));
+        return result.IsFailed
+            ? ToFailResults(result)
+            : Ok(new SuccessDto($"Name change successfully to {result.Value.DisplayName}."));
     }
 
     /// <summary>

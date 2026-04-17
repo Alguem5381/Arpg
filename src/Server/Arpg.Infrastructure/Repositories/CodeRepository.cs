@@ -1,5 +1,4 @@
 using Arpg.Application.Repositories;
-using Arpg.Core.Models;
 using Arpg.Core.Models.Customer;
 using Arpg.Infrastructure.Data;
 

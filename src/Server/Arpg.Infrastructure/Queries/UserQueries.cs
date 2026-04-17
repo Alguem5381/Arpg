@@ -1,5 +1,3 @@
-using Arpg.Application.Auth;
-using Arpg.Application.Mapper;
 using Arpg.Application.Queries;
 using Arpg.Contracts.Dto.User;
 using Arpg.Infrastructure.Data;

@@ -49,7 +49,7 @@ public class SheetServicesTests
     public async Task CreateAsync_TemplateNotFound_ReturnsNotFoundError()
     {
         var dto = new CreateDto("My Sheet", Guid.NewGuid());
-        _createValidatorMock.Setup(x => x.ValidateAsync(dto, default)).ReturnsAsync(new ValidationResult());
+        _createValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
         _templateRepositoryMock.Setup(x => x.GetAsync(dto.TemplateId)).ReturnsAsync((Template?)null);
 
         var result = await _sut.CreateAsync(dto);
@@ -70,7 +70,7 @@ public class SheetServicesTests
         template.Structure.Categories.Add(new TemplateCategory { Id = Guid.NewGuid() });
         template.Structure.Fields.Add(new TemplateField { Id = fieldId, CategoryId = Guid.NewGuid(), Type = FieldType.Text, DefaultValue = "Default" });
 
-        _createValidatorMock.Setup(x => x.ValidateAsync(dto, default)).ReturnsAsync(new ValidationResult());
+        _createValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
         _templateRepositoryMock.Setup(x => x.GetAsync(templateId)).ReturnsAsync(template);
         _userContextMock.Setup(x => x.Id).Returns(userId);
 
@@ -93,7 +93,7 @@ public class SheetServicesTests
         var dto = new ComputeDto(Guid.NewGuid(), new Dictionary<Guid, object?>());
         var userId = Guid.NewGuid();
 
-        _computeValidatorMock.Setup(x => x.ValidateAsync(dto, default)).ReturnsAsync(new ValidationResult());
+        _computeValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
         _userContextMock.Setup(x => x.Id).Returns(userId);
         _sheetRepositoryMock.Setup(x => x.GetSheetAsync(dto.Id, userId)).ReturnsAsync((Sheet?)null);
 
@@ -116,7 +116,7 @@ public class SheetServicesTests
         var template = new Template { Id = templateId };
         template.Structure.Fields.Add(new TemplateField { Id = fieldId, Type = FieldType.Number });
 
-        _computeValidatorMock.Setup(x => x.ValidateAsync(dto, default)).ReturnsAsync(new ValidationResult());
+        _computeValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
         _userContextMock.Setup(x => x.Id).Returns(userId);
         _sheetRepositoryMock.Setup(x => x.GetSheetAsync(sheetId, userId)).ReturnsAsync(sheet);
         _templateRepositoryMock.Setup(x => x.GetAsync(templateId)).ReturnsAsync(template);

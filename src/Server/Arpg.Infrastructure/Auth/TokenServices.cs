@@ -2,7 +2,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Arpg.Application.Auth;
-using Arpg.Core.Models;
 using Arpg.Core.Models.Customer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

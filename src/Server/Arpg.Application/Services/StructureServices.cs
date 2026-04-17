@@ -1,20 +1,14 @@
-using Arpg.Application.Abstractions;
 using Arpg.Application.Auth;
 using Arpg.Application.Mapper;
 using Arpg.Application.Repositories;
-
 using Arpg.Contracts.Dto.Structure;
-
 using Arpg.Primitives.Constants;
 using Arpg.Primitives.Codes;
 using Arpg.Primitives.Results;
 
-using FluentResults;
-
 namespace Arpg.Application.Services;
 
-public class StructureServices
-(
+public class StructureServices(
     IUnitOfWork unitOfWork,
     IUserContext userContext,
     ITemplateRepository templateRepository

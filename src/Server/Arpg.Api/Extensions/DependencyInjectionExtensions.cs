@@ -1,7 +1,6 @@
 using System.Text;
 using Arpg.Api.Controllers;
 using Arpg.Api.Services;
-using Arpg.Application.Abstractions;
 using Arpg.Application.Auth;
 using Arpg.Infrastructure.Converters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -25,20 +24,20 @@ public static class DependencyInjectionExtensions
                 .CreateLogger();
 
             builder.Host.UseSerilog();
-            
+
             builder.Services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
-            
+
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.Converters.Add(new DynamicObjectConverter());
                 });
-            
+
             builder.Services.AddEndpointsApiExplorer();
-            
+
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
@@ -76,7 +75,7 @@ public static class DependencyInjectionExtensions
                     }
                 });
             });
-            
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowWasmClient", policy =>
@@ -87,16 +86,16 @@ public static class DependencyInjectionExtensions
                         .AllowAnyHeader();
                 });
             });
-            
+
             builder.Services.AddHttpContextAccessor();
-            
+
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
             builder.Services.AddProblemDetails();
-            
+
             builder.Services.AddScoped<IUserContext, UserContext>();
-            
+
             var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]!);
-            
+
             builder.Services.AddAuthentication(x =>
                 {
                     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -114,7 +113,7 @@ public static class DependencyInjectionExtensions
                         ValidateAudience = false
                     };
                 });
-            
+
             return builder;
         }
     }

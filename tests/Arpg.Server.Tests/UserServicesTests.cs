@@ -39,7 +39,7 @@ public class UserServicesTests
     {
         var dto = new EditDto("A");
         var validationResult = new ValidationResult(new[] { new ValidationFailure("DisplayName", "Too short") });
-        _editDtoValidatorMock.Setup(x => x.ValidateAsync(dto, default)).ReturnsAsync(validationResult);
+        _editDtoValidatorMock.Setup(x => x.Validate(dto)).Returns(validationResult);
 
         var result = await _sut.EditAsync(dto);
 
@@ -53,7 +53,7 @@ public class UserServicesTests
         var dto = new EditDto("New Name");
         var userId = Guid.NewGuid();
         
-        _editDtoValidatorMock.Setup(x => x.ValidateAsync(dto, default)).ReturnsAsync(new ValidationResult());
+        _editDtoValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
         _userContextMock.Setup(x => x.Id).Returns(userId);
         _userRepositoryMock.Setup(x => x.GetAsync(userId)).ReturnsAsync((User?)null);
 
@@ -70,7 +70,7 @@ public class UserServicesTests
         var user = new User { DisplayName = "Old Name", Username = "user123" };
         var userId = user.Id;
         
-        _editDtoValidatorMock.Setup(x => x.ValidateAsync(dto, default)).ReturnsAsync(new ValidationResult());
+        _editDtoValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
         _userContextMock.Setup(x => x.Id).Returns(userId);
         _userRepositoryMock.Setup(x => x.GetAsync(userId)).ReturnsAsync(user);
 
