@@ -1,42 +1,31 @@
 using Arpg.Application.Auth;
-using Arpg.Application.Extensions;
 using Arpg.Application.Mapper;
-using Arpg.Application.Queries;
 using Arpg.Application.Repositories;
-
 using Arpg.Contracts.Dto.Sheet;
-
 using Arpg.Primitives.Codes;
 using Arpg.Primitives.Constants;
 using Arpg.Primitives.Results;
-
-using FluentResults;
 using FluentValidation;
 
 namespace Arpg.Application.Services;
 
-public class SheetServices
-(
+public class SheetServices(
     IUnitOfWork unitOfWork,
-
     IUserContext userContext,
-
     ISheetRepository sheetRepository,
     ITemplateRepository templateRepository,
-
     IValidator<CreateDto> createValidator,
     IValidator<EditDto> editValidator,
     IValidator<ComputeDto> computeValidator
-)
+) : BaseService
 {
     private readonly SheetMapper _sheetMapper = new();
 
     public async Task<Result<Guid>> CreateAsync(CreateDto dto)
     {
-        var validation = await createValidator.ValidateAsync(dto);
-
-        if (!validation.IsValid)
-            return validation.ToResult();
+        var validation = Validate(createValidator, dto);
+        if (validation.IsFailed)
+            return validation;
 
         var template = await templateRepository.GetAsync(dto.TemplateId);
 
@@ -61,10 +50,9 @@ public class SheetServices
 
     public async Task<Result> ComputeDataAsync(ComputeDto dto)
     {
-        var validation = await computeValidator.ValidateAsync(dto);
-
-        if (!validation.IsValid)
-            return validation.ToResult();
+        var validation = Validate(computeValidator, dto);
+        if (validation.IsFailed)
+            return validation;
 
         var sheet = await sheetRepository.GetSheetAsync(dto.Id, userContext.Id);
 
@@ -90,10 +78,9 @@ public class SheetServices
 
     public async Task<Result<SheetDto>> EditAsync(EditDto dto)
     {
-        var validation = await editValidator.ValidateAsync(dto);
-
-        if (!validation.IsValid)
-            return validation.ToResult();
+        var validation = Validate(editValidator, dto);
+        if (validation.IsFailed)
+            return validation;
 
         var sheet = await sheetRepository.GetSheetAsync(dto.Id, userContext.Id);
 

@@ -5,7 +5,6 @@ using Arpg.Primitives.Codes;
 using Arpg.Primitives.Constants;
 using Arpg.Primitives.Enums.Template;
 using Arpg.Primitives.Results;
-using FluentResults;
 
 namespace Arpg.Core.Models.Definitions;
 
@@ -16,7 +15,7 @@ public class TemplateStructure
 
     public Result Update(BatchUpdate batch)
     {
-        List<IError> errors = [];
+        var errors = new List<Error>();
 
         //Itera sobre as operações de categorias e processa cada uma
         errors.AddNullableRange(batch.Categories?.SelectMany(catOp => ProcessCategory(this, catOp).Errors));
@@ -82,9 +81,10 @@ public class TemplateStructure
         static Result DeleteCategory(TemplateStructure structure, CategoryOperation op)
         {
             var cat = structure.Categories.FirstOrDefault(c => c.Id == op.Id);
-            if (cat == null) return Result.Fail(new ValidationError("Category not found.")
-                .WithMetadata(MetadataKey.Error, StructureCodes.CategoryNotFound)
-                .WithMetadata(MetadataKey.Category, op.Id));
+            if (cat == null)
+                return Result.Fail(new ValidationError("Category not found.")
+                    .WithMetadata(MetadataKey.Error, StructureCodes.CategoryNotFound)
+                    .WithMetadata(MetadataKey.Category, op.Id));
 
             structure.Categories.Remove(cat);
             return Result.Ok();
@@ -167,10 +167,11 @@ public class TemplateStructure
         {
             var field = structure.Fields.FirstOrDefault(f => f.Id == op.Id);
 
-            if (field == null) return Result.Fail(new ValidationError("Field not found.")
-                .WithMetadata(MetadataKey.Error, StructureCodes.FieldNotFound)
-                .WithMetadata(MetadataKey.Category, op.CategoryId)
-                .WithMetadata(MetadataKey.Field, op.Id));
+            if (field == null)
+                return Result.Fail(new ValidationError("Field not found.")
+                    .WithMetadata(MetadataKey.Error, StructureCodes.FieldNotFound)
+                    .WithMetadata(MetadataKey.Category, op.CategoryId)
+                    .WithMetadata(MetadataKey.Field, op.Id));
 
             structure.Fields.Remove(field);
             return Result.Ok();

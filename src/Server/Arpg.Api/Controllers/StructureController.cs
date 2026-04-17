@@ -1,9 +1,6 @@
 using Arpg.Application.Services;
-
 using Arpg.Contracts.Dto.General;
 using Arpg.Contracts.Dto.Structure;
-
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Arpg.Api.Controllers;
@@ -27,6 +24,8 @@ public class StructureController(StructureServices structureServices) : BaseCont
     {
         var result = await structureServices.UpdateStructureAsync(request);
 
-        return result.IsSuccess ? Ok(new SuccessDto("Template structure updated successfully.")) : ToFailResults(result, true);
+        return result.IsSuccess
+            ? Ok(new SuccessDto("Template structure updated successfully."))
+            : ToFailResults(result, true);
     }
 }

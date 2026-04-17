@@ -1,6 +1,4 @@
 using Arpg.Application.Auth;
-using Arpg.Application.Extensions;
-using Arpg.Application.Mapper;
 using Arpg.Application.Queries;
 using Arpg.Application.Repositories;
 using Arpg.Contracts.Dto.Template;
@@ -9,32 +7,27 @@ using Arpg.Core.Models.Definitions;
 using Arpg.Primitives.Codes;
 using Arpg.Primitives.Constants;
 using Arpg.Primitives.Results;
-using FluentResults;
 using FluentValidation;
 
 namespace Arpg.Application.Services;
 
-public class TemplateServices
-(
+public class TemplateServices(
     IUserContext userContext,
     IPasswordHasher passwordHasher,
-
     IAccountRepository accountRepository,
     ITemplateRepository templateRepository,
     ISheetQueries sheetRepository,
-
     IUnitOfWork unitOfWork,
-
     IValidator<TemplateCreateDto> createDtoValidator,
     IValidator<TemplateEditDto> editDtoValidator,
     IValidator<TemplateDeleteDto> deleteDtoValidator
-)
+) : BaseService
 {
     public async Task<Result<Guid>> CreateAsync(TemplateCreateDto dto)
     {
-        var result = await createDtoValidator.ValidateAsync(dto);
-        if (!result.IsValid)
-            return result.ToResult();
+        var validation = Validate(createDtoValidator, dto);
+        if (validation.IsFailed)
+            return validation;
 
         var template = new Template()
         {
@@ -50,9 +43,9 @@ public class TemplateServices
 
     public async Task<Result<Template>> EditAsync(TemplateEditDto dto)
     {
-        var result = await editDtoValidator.ValidateAsync(dto);
-        if (!result.IsValid)
-            return result.ToResult();
+        var validation = Validate(editDtoValidator, dto);
+        if (validation.IsFailed)
+            return validation;
 
         var template = await templateRepository.GetAsync(dto.Id, userContext.Id);
 
@@ -70,9 +63,9 @@ public class TemplateServices
 
     public async Task<Result<bool>> DeleteAsync(TemplateDeleteDto dto)
     {
-        var result = await deleteDtoValidator.ValidateAsync(dto);
-        if (!result.IsValid)
-            return result.ToResult();
+        var validation = Validate(deleteDtoValidator, dto);
+        if (validation.IsFailed)
+            return validation;
 
         var account = await accountRepository.GetOwnerAsync(userContext.Id);
 

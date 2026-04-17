@@ -1,22 +1,19 @@
 using Arpg.Application.Services;
-
 using Arpg.Contracts.Dto.General;
 using Arpg.Contracts.Dto.Template;
-
 using Arpg.Application.Queries;
 using Arpg.Application.Auth;
-
 using Arpg.Primitives.Constants;
 using Arpg.Primitives.Codes;
-
 using Microsoft.AspNetCore.Mvc;
-
-using FluentResults;
 using Arpg.Primitives.Results;
 
 namespace Arpg.Api.Controllers;
 
-public class TemplateController(TemplateServices templateServices, ITemplateQueries templateQueries, IUserContext userContext) : BaseController()
+public class TemplateController(
+    TemplateServices templateServices,
+    ITemplateQueries templateQueries,
+    IUserContext userContext) : BaseController
 {
     /// <summary>
     /// Cria um novo Template de RPG associado ao usuário

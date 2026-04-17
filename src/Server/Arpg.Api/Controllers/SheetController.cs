@@ -1,23 +1,18 @@
 using Arpg.Application.Auth;
 using Arpg.Application.Queries;
 using Arpg.Application.Services;
-
 using Arpg.Contracts.Dto.General;
 using Arpg.Contracts.Dto.Sheet;
-
 using Arpg.Primitives.Codes;
 using Arpg.Primitives.Constants;
 using Arpg.Primitives.Results;
-
-using FluentResults;
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace Arpg.Api.Controllers;
 
-public class SheetController(SheetServices sheetServices, ISheetQueries sheetQueries, IUserContext userContext) : BaseController
+public class SheetController(SheetServices sheetServices, ISheetQueries sheetQueries, IUserContext userContext)
+    : BaseController
 {
-
     /// <summary>
     /// Cria uma nova ficha.
     /// </summary>
@@ -35,12 +30,14 @@ public class SheetController(SheetServices sheetServices, ISheetQueries sheetQue
     {
         var result = await sheetServices.CreateAsync(request);
 
-        return result.IsFailed ? ToFailResults(result) : CreatedAtAction
-        (
-            nameof(Get),
-            new { id = result.Value },
-            result.Value
-        );
+        return result.IsFailed
+            ? ToFailResults(result)
+            : CreatedAtAction
+            (
+                nameof(Get),
+                new { id = result.Value },
+                result.Value
+            );
     }
 
     /// <summary>

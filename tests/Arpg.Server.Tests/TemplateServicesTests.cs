@@ -57,10 +57,10 @@ public class TemplateServicesTests
     {
         var dto = new TemplateDeleteDto(Guid.NewGuid(), "wrongpass");
         var userId = Guid.NewGuid();
-        var account = new Account(userId, "test@test.com"); // Not hashed properly, just mockup
+        var account = new Account(userId, "test@test.com");
         
         _userContextMock.Setup(x => x.Id).Returns(userId);
-        _deleteDtoValidatorMock.Setup(x => x.ValidateAsync(dto, default)).ReturnsAsync(new ValidationResult());
+        _deleteDtoValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
         _accountRepositoryMock.Setup(x => x.GetOwnerAsync(userId)).ReturnsAsync(account);
         _passwordHasherMock.Setup(x => x.Verify("wrongpass", It.IsAny<string>())).Returns(false);
 
@@ -81,7 +81,7 @@ public class TemplateServicesTests
         var template = new Template { Id = templateId, OwnerId = userId, Name = "Original Name" };
         
         _userContextMock.Setup(x => x.Id).Returns(userId);
-        _deleteDtoValidatorMock.Setup(x => x.ValidateAsync(dto, default)).ReturnsAsync(new ValidationResult());
+        _deleteDtoValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
         _accountRepositoryMock.Setup(x => x.GetOwnerAsync(userId)).ReturnsAsync(account);
         _passwordHasherMock.Setup(x => x.Verify("correctpass", It.IsAny<string>())).Returns(true);
         _templateRepositoryMock.Setup(x => x.GetAsync(templateId, userId)).ReturnsAsync(template);
@@ -112,7 +112,7 @@ public class TemplateServicesTests
         var template = new Template { Id = templateId, OwnerId = userId };
         
         _userContextMock.Setup(x => x.Id).Returns(userId);
-        _deleteDtoValidatorMock.Setup(x => x.ValidateAsync(dto, default)).ReturnsAsync(new ValidationResult());
+        _deleteDtoValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
         _accountRepositoryMock.Setup(x => x.GetOwnerAsync(userId)).ReturnsAsync(account);
         _passwordHasherMock.Setup(x => x.Verify("correctpass", It.IsAny<string>())).Returns(true);
         _templateRepositoryMock.Setup(x => x.GetAsync(templateId, userId)).ReturnsAsync(template);

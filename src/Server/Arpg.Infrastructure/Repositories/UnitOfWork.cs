@@ -1,6 +1,5 @@
 using Arpg.Application.Repositories;
 using Arpg.Infrastructure.Data;
-using FluentResults;
 
 namespace Arpg.Infrastructure.Repositories;
 

@@ -1,5 +1,4 @@
 using Arpg.Contracts.Dto.User;
-using FluentResults;
 
 namespace Arpg.Application.Queries;
 

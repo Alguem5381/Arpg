@@ -4,8 +4,6 @@ using Arpg.Primitives.Codes;
 using Arpg.Primitives.Constants;
 using Arpg.Primitives.Results;
 
-using FluentResults;
-
 namespace Arpg.Core.Models;
 
 public class Sheet
@@ -29,11 +27,12 @@ public class Sheet
         return Result.Ok();
     }
 
-    public Result<Dictionary<Guid, object?>> ComputeData(Dictionary<Guid, object?> inputValues, TemplateStructure template)
+    public Result<Dictionary<Guid, object?>> ComputeData(Dictionary<Guid, object?> inputValues,
+        TemplateStructure template)
     {
         Dictionary<Guid, object?> newData = [];
 
-        List<IError> errors = [];
+        List<Error> errors = [];
 
         foreach (var field in template.Fields)
         {
