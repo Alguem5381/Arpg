@@ -1,8 +1,7 @@
-using Arpg.Application.Auth;
 using Arpg.Core.Models;
 using Arpg.Core.Models.Customer;
 using Arpg.Core.Models.Definitions;
-using Arpg.Infrastructure.Auth;
+using Arpg.Core.Models.Tabletop;
 using Microsoft.EntityFrameworkCore;
 
 namespace Arpg.Infrastructure.Data;
@@ -11,6 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<Sheet> Sheets { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<GameTable> GameTables { get; set; }
     public DbSet<Template> Templates { get; set; }
     public DbSet<Code> Codes { get; set; }
     public DbSet<Account> Accounts { get; set; }

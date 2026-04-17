@@ -10,4 +10,5 @@ public interface IUserRepository : IRepository<User>
     Task<User?> GetAsync(string username);
     Task<User?> GetReadOnlyAsync(Guid id);
     Task<User?> GetReadOnlyAsync(string username);
+    Task<bool> AnyAll(IEnumerable<Guid> userIds);
 }

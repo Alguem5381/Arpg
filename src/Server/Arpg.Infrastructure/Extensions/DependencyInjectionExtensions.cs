@@ -1,3 +1,4 @@
+using System;
 using Arpg.Application.Abstractions;
 using Arpg.Application.Auth;
 using Arpg.Application.Queries;
@@ -51,10 +52,12 @@ public static class DependencyInjectionExtensions
             collection.AddScoped<ITemplateRepository, TemplateRepository>();
             collection.AddScoped<IAccountRepository, AccountRepository>();
             collection.AddScoped<ICodeRepository, CodeRepository>();
+            collection.AddScoped<IGameTableRepository, GameTableRepository>();
 
             collection.AddScoped<IUserQueries, UserQueries>();
             collection.AddScoped<ISheetQueries, SheetQueries>();
             collection.AddScoped<ITemplateQueries, TemplateQueries>();
+            collection.AddScoped<IGameTableQueries, GameTableQueries>();
 
             return collection;
         }

@@ -26,6 +26,6 @@ public class StructureController(StructureServices structureServices) : BaseCont
 
         return result.IsSuccess
             ? Ok(new SuccessDto("Template structure updated successfully."))
-            : ToFailResults(result, true);
+            : ToFailResults(result);
     }
 }
