@@ -70,7 +70,7 @@ public class AuthServices
         try
         {
             var response =
-                await client.PostAsJsonAsync(ApiEndpoints.User.New, request, AppJsonContext.Default.NewDto);
+                await client.PostAsJsonAsync(ApiEndpoints.User.New, request, AppJsonContext.Default.NewUserDto);
 
             var result = await response.ToResultAsync<CodeDto>();
 

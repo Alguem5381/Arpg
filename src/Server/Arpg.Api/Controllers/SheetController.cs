@@ -16,6 +16,7 @@ public class SheetController(
     IUserContext userContext
 ) : BaseController
 {
+    // TODO: Adicionar um retorno mais adequado
     /// <summary>
     /// Cria uma nova ficha.
     /// </summary>
@@ -43,6 +44,7 @@ public class SheetController(
             );
     }
 
+    // TODO: Adicionar o template para manipular a ficha corretamente
     /// <summary>
     /// Busca uma ficha pelo ID.
     /// </summary>

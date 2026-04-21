@@ -20,32 +20,32 @@ public class AccountServices(
     ICodeRepository codeRepository,
     IAccountRepository accountRepository,
     IPasswordHasher passwordHasher,
-    IValidator<NewDto> newDtoValidator,
+    IValidator<NewUserDto> newDtoValidator,
     IValidator<LoginDto> loginDtoValidator,
     IValidator<ValidateCodeDto> validateCodeDtoValidator,
-    IValidator<DeleteDto> deleteDtoValidator,
+    IValidator<DeleteUserDto> deleteDtoValidator,
     IUnitOfWork unitOfWork
 ) : BaseService
 {
     private readonly UserMapper _userMapper = new();
     private readonly AccountMapper _accountMapper = new();
 
-    public async Task<Result<CodeDto>> NewAsync(NewDto dto)
+    public async Task<Result<CodeDto>> NewAsync(NewUserDto dto)
     {
         var validation = Validate(newDtoValidator, dto);
         if (validation.IsFailed)
             return validation;
 
-        if (await accountRepository.AnyAsync(dto.Username))
+        if (await userRepository.AnyAsync(dto.Username))
             return Result.Fail(new ConflictError("Username already exists.")
                 .WithMetadata(MetadataKey.Error, UserCodes.UserConflict));
 
         if (await accountRepository.AnyAsync(dto.Email))
             return Result.Fail(new ValidationError("Invalid email.")
                 .WithMetadata(MetadataKey.Error, DataFormatCodes.InvalidEmail)
-                .WithMetadata(MetadataKey.PropertyName, nameof(NewDto.Email))
+                .WithMetadata(MetadataKey.PropertyName, nameof(NewUserDto.Email))
                 .WithMetadata("PropertyValue", dto.Email)
-                .WithMetadata("PropertyPath", nameof(NewDto.Email)));
+                .WithMetadata("PropertyPath", nameof(NewUserDto.Email)));
 
         var user = _userMapper.NewDtoToUser(dto);
         var account = new Account(user.Id, dto.Email);
@@ -77,8 +77,7 @@ public class AccountServices(
                 .WithMetadata(MetadataKey.Error, UserCodes.InvalidCredentials));
 
         if (account.IsLockedOut())
-            return Result.Fail(
-                new UnauthorizedError("Account is temporarily locked out due to multiple failed login attempts.")
+            return Result.Fail(new UnauthorizedError("Account is temporarily locked out due to multiple failed login attempts.")
                     .WithMetadata(MetadataKey.Error, UserCodes.AccountLocked));
 
         if (!account.PasswordMatches(dto.Password, passwordHasher))
@@ -104,7 +103,7 @@ public class AccountServices(
     {
         var code = new Code
         {
-            OwnerId = account.Id
+            OwnerId = account.OwnerId
         };
 
         codeRepository.Add(code);
@@ -140,7 +139,7 @@ public class AccountServices(
         return tokenServices.GenerateToken(user, user.Username);
     }
 
-    public async Task<Result> DeleteAsync(DeleteDto dto)
+    public async Task<Result> DeleteAsync(DeleteUserDto dto)
     {
         var validation = Validate(deleteDtoValidator, dto);
         if (validation.IsFailed)
