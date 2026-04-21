@@ -9,6 +9,6 @@ namespace Arpg.Client.Abstractions;
 public interface IAuthServices
 {
     Task<Result<CodeDto>> LoginAsync(LoginDto request);
-    Task<Result<CodeDto>> NewAsync(NewDto request);
+    Task<Result<CodeDto>> NewAsync(NewUserDto request);
     Task<Result> ValidateAsync(ValidateCodeDto request);
 }

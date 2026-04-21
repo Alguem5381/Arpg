@@ -14,14 +14,14 @@ public class SheetServices(
     IUserContext userContext,
     ISheetRepository sheetRepository,
     ITemplateRepository templateRepository,
-    IValidator<CreateDto> createValidator,
-    IValidator<EditDto> editValidator,
-    IValidator<ComputeDto> computeValidator
+    IValidator<NewSheetDto> createValidator,
+    IValidator<EditSheetDto> editValidator,
+    IValidator<ComputeSheetDto> computeValidator
 ) : BaseService
 {
     private readonly SheetMapper _sheetMapper = new();
 
-    public async Task<Result<Guid>> CreateAsync(CreateDto dto)
+    public async Task<Result<Guid>> CreateAsync(NewSheetDto dto)
     {
         var validation = Validate(createValidator, dto);
         if (validation.IsFailed)
@@ -48,7 +48,7 @@ public class SheetServices(
         return Result.Ok(sheet.Id);
     }
 
-    public async Task<Result> ComputeDataAsync(ComputeDto dto)
+    public async Task<Result> ComputeDataAsync(ComputeSheetDto dto)
     {
         var validation = Validate(computeValidator, dto);
         if (validation.IsFailed)
@@ -76,7 +76,7 @@ public class SheetServices(
         return Result.Ok();
     }
 
-    public async Task<Result<SheetDto>> EditAsync(EditDto dto)
+    public async Task<Result<SheetDto>> EditAsync(EditSheetDto dto)
     {
         var validation = Validate(editValidator, dto);
         if (validation.IsFailed)

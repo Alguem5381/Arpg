@@ -16,7 +16,7 @@ public class StructureServices(
 {
     private readonly StructureMapper _structureMapper = new();
 
-    public async Task<Result> UpdateStructureAsync(BatchUpdateDto batch)
+    public async Task<Result> UpdateStructureAsync(BatchStructureDto batch)
     {
         var template = await templateRepository.GetAsync(batch.TemplateId, userContext.Id);
 

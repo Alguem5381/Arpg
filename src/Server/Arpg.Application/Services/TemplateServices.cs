@@ -18,12 +18,12 @@ public class TemplateServices(
     ITemplateRepository templateRepository,
     ISheetQueries sheetRepository,
     IUnitOfWork unitOfWork,
-    IValidator<TemplateCreateDto> createDtoValidator,
-    IValidator<TemplateEditDto> editDtoValidator,
-    IValidator<TemplateDeleteDto> deleteDtoValidator
+    IValidator<NewTemplateDto> createDtoValidator,
+    IValidator<EditTemplateDto> editDtoValidator,
+    IValidator<DeleteTemplateDto> deleteDtoValidator
 ) : BaseService
 {
-    public async Task<Result<Guid>> CreateAsync(TemplateCreateDto dto)
+    public async Task<Result<Guid>> CreateAsync(NewTemplateDto dto)
     {
         var validation = Validate(createDtoValidator, dto);
         if (validation.IsFailed)
@@ -41,7 +41,7 @@ public class TemplateServices(
         return Result.Ok(template.Id);
     }
 
-    public async Task<Result<Template>> EditAsync(TemplateEditDto dto)
+    public async Task<Result<Template>> EditAsync(EditTemplateDto dto)
     {
         var validation = Validate(editDtoValidator, dto);
         if (validation.IsFailed)
@@ -61,7 +61,7 @@ public class TemplateServices(
         return Result.Ok(template);
     }
 
-    public async Task<Result<bool>> DeleteAsync(TemplateDeleteDto dto)
+    public async Task<Result<bool>> DeleteAsync(DeleteTemplateDto dto)
     {
         var validation = Validate(deleteDtoValidator, dto);
         if (validation.IsFailed)

@@ -10,8 +10,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Arpg.Api.Controllers;
 
-public class SheetController(SheetServices sheetServices, ISheetQueries sheetQueries, IUserContext userContext)
-    : BaseController
+public class SheetController(
+    SheetServices sheetServices,
+    ISheetQueries sheetQueries,
+    IUserContext userContext
+) : BaseController
 {
     /// <summary>
     /// Cria uma nova ficha.
@@ -26,7 +29,7 @@ public class SheetController(SheetServices sheetServices, ISheetQueries sheetQue
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Create([FromBody] CreateDto request)
+    public async Task<IActionResult> Create([FromBody] NewSheetDto request)
     {
         var result = await sheetServices.CreateAsync(request);
 
@@ -90,7 +93,7 @@ public class SheetController(SheetServices sheetServices, ISheetQueries sheetQue
     [ProducesResponseType(typeof(SheetDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Edit([FromBody] EditDto request)
+    public async Task<IActionResult> Edit([FromBody] EditSheetDto request)
     {
         var result = await sheetServices.EditAsync(request);
 
@@ -112,7 +115,7 @@ public class SheetController(SheetServices sheetServices, ISheetQueries sheetQue
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status422UnprocessableEntity)]
-    public async Task<IActionResult> Update([FromBody] ComputeDto request)
+    public async Task<IActionResult> Update([FromBody] ComputeSheetDto request)
     {
         var result = await sheetServices.ComputeDataAsync(request);
 

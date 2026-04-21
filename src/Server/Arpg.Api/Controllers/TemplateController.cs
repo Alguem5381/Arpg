@@ -13,7 +13,8 @@ namespace Arpg.Api.Controllers;
 public class TemplateController(
     TemplateServices templateServices,
     ITemplateQueries templateQueries,
-    IUserContext userContext) : BaseController
+    IUserContext userContext
+) : BaseController
 {
     /// <summary>
     /// Cria um novo Template de RPG associado ao usuário
@@ -26,7 +27,7 @@ public class TemplateController(
     [HttpPost]
     [ProducesResponseType(typeof(SuccessCreateDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Create([FromBody] TemplateCreateDto request)
+    public async Task<IActionResult> Create([FromBody] NewTemplateDto request)
     {
         var result = await templateServices.CreateAsync(request);
 
@@ -86,7 +87,7 @@ public class TemplateController(
     [ProducesResponseType(typeof(SuccessDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Edit([FromBody] TemplateEditDto request)
+    public async Task<IActionResult> Edit([FromBody] EditTemplateDto request)
     {
         var result = await templateServices.EditAsync(request);
 
@@ -108,7 +109,7 @@ public class TemplateController(
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status422UnprocessableEntity)]
-    public async Task<IActionResult> Delete([FromBody] TemplateDeleteDto request)
+    public async Task<IActionResult> Delete([FromBody] DeleteTemplateDto request)
     {
         var result = await templateServices.DeleteAsync(request);
 
