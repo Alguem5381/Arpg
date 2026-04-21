@@ -12,7 +12,7 @@ public class CodeConfiguration : IEntityTypeConfiguration<Code>
     public void Configure(EntityTypeBuilder<Code> builder)
     {
         builder.HasKey(code => code.Key);
-        
+
         builder.HasOne<Account>()
             .WithMany()
             .HasForeignKey(code => code.OwnerId)

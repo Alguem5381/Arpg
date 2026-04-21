@@ -2,16 +2,13 @@ using Arpg.Application.Abstractions;
 using Arpg.Application.Auth;
 using Arpg.Application.Queries;
 using Arpg.Application.Repositories;
-
 using Arpg.Infrastructure.Auth;
 using Arpg.Infrastructure.Configurations;
 using Arpg.Infrastructure.Data;
 using Arpg.Infrastructure.Queries;
 using Arpg.Infrastructure.Repositories;
 using Arpg.Infrastructure.Services;
-
 using Microsoft.EntityFrameworkCore;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -32,7 +29,7 @@ public static class DependencyInjectionExtensions
                 options.UseNpgsql(
                     connectionString,
                     b => b.MigrationsAssembly("Arpg.Infrastructure")
-            ));
+                ));
 
             collection.Configure<EmailSettings>(
                 configuration.GetSection("EmailSettings"));
