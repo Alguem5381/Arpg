@@ -11,7 +11,7 @@ namespace Arpg.Client.Core;
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 
 [JsonSerializable(typeof(LoginDto))]
-[JsonSerializable(typeof(NewDto))]
+[JsonSerializable(typeof(NewUserDto))]
 [JsonSerializable(typeof(SuccessLoginDto))]
 [JsonSerializable(typeof(CodeDto))]
 [JsonSerializable(typeof(ValidateCodeDto))]

@@ -43,27 +43,19 @@ namespace Arpg.Infrastructure.Migrations
                     b.Property<DateTime?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.HasIndex("Username")
+                    b.HasIndex("OwnerId")
                         .IsUnique();
 
                     b.ToTable("Accounts");
@@ -104,6 +96,10 @@ namespace Arpg.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
@@ -128,10 +124,12 @@ namespace Arpg.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("OwnerId")
+                    b.Property<Guid>("OwnerId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Templates");
                 });
@@ -193,7 +191,7 @@ namespace Arpg.Infrastructure.Migrations
                 {
                     b.HasOne("Arpg.Core.Models.Customer.User", null)
                         .WithOne()
-                        .HasForeignKey("Arpg.Core.Models.Customer.Account", "UserId")
+                        .HasForeignKey("Arpg.Core.Models.Customer.Account", "OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -204,7 +202,7 @@ namespace Arpg.Infrastructure.Migrations
                         .WithMany("Codes")
                         .HasForeignKey("AccountId");
 
-                    b.HasOne("Arpg.Core.Models.Customer.Account", null)
+                    b.HasOne("Arpg.Core.Models.Customer.User", null)
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -213,6 +211,12 @@ namespace Arpg.Infrastructure.Migrations
 
             modelBuilder.Entity("Arpg.Core.Models.Definitions.Template", b =>
                 {
+                    b.HasOne("Arpg.Core.Models.Customer.User", null)
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.OwnsOne("Arpg.Core.Models.Definitions.TemplateStructure", "Structure", b1 =>
                         {
                             b1.Property<Guid>("TemplateId");

@@ -13,12 +13,12 @@ public class UserServices(
     IUnitOfWork unitOfWork,
     IUserRepository userRepository,
     IUserContext userContext,
-    IValidator<EditDto> editDtoValidator
+    IValidator<EditUserDto> editDtoValidator
 ) : BaseService
 {
     private readonly UserMapper _userMapper = new();
 
-    public async Task<Result<UserDto>> EditAsync(EditDto dto)
+    public async Task<Result<UserDto>> EditAsync(EditUserDto dto)
     {
         var validation = Validate(editDtoValidator, dto);
         if (validation.IsFailed)

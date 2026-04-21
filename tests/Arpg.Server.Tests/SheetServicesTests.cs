@@ -18,9 +18,9 @@ public class SheetServicesTests
     private readonly Mock<IUserContext> _userContextMock;
     private readonly Mock<ISheetRepository> _sheetRepositoryMock;
     private readonly Mock<ITemplateRepository> _templateRepositoryMock;
-    private readonly Mock<IValidator<CreateDto>> _createValidatorMock;
-    private readonly Mock<IValidator<EditDto>> _editValidatorMock;
-    private readonly Mock<IValidator<ComputeDto>> _computeValidatorMock;
+    private readonly Mock<IValidator<NewSheetDto>> _createValidatorMock;
+    private readonly Mock<IValidator<EditSheetDto>> _editValidatorMock;
+    private readonly Mock<IValidator<ComputeSheetDto>> _computeValidatorMock;
 
     private readonly SheetServices _sut;
 
@@ -30,9 +30,9 @@ public class SheetServicesTests
         _userContextMock = new Mock<IUserContext>();
         _sheetRepositoryMock = new Mock<ISheetRepository>();
         _templateRepositoryMock = new Mock<ITemplateRepository>();
-        _createValidatorMock = new Mock<IValidator<CreateDto>>();
-        _editValidatorMock = new Mock<IValidator<EditDto>>();
-        _computeValidatorMock = new Mock<IValidator<ComputeDto>>();
+        _createValidatorMock = new Mock<IValidator<NewSheetDto>>();
+        _editValidatorMock = new Mock<IValidator<EditSheetDto>>();
+        _computeValidatorMock = new Mock<IValidator<ComputeSheetDto>>();
 
         _sut = new SheetServices(
             _unitOfWorkMock.Object,
@@ -48,7 +48,7 @@ public class SheetServicesTests
     [Fact]
     public async Task CreateAsync_TemplateNotFound_ReturnsNotFoundError()
     {
-        var dto = new CreateDto("My Sheet", Guid.NewGuid());
+        var dto = new NewSheetDto("My Sheet", Guid.NewGuid());
         _createValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
         _templateRepositoryMock.Setup(x => x.GetAsync(dto.TemplateId)).ReturnsAsync((Template?)null);
 
@@ -63,12 +63,13 @@ public class SheetServicesTests
     {
         var templateId = Guid.NewGuid();
         var fieldId = Guid.NewGuid();
-        var dto = new CreateDto("My Sheet", templateId);
+        var dto = new NewSheetDto("My Sheet", templateId);
         var userId = Guid.NewGuid();
-        
+
         var template = new Template { Id = templateId };
         template.Structure.Categories.Add(new TemplateCategory { Id = Guid.NewGuid() });
-        template.Structure.Fields.Add(new TemplateField { Id = fieldId, CategoryId = Guid.NewGuid(), Type = FieldType.Text, DefaultValue = "Default" });
+        template.Structure.Fields.Add(new TemplateField
+            { Id = fieldId, CategoryId = Guid.NewGuid(), Type = FieldType.Text, DefaultValue = "Default" });
 
         _createValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
         _templateRepositoryMock.Setup(x => x.GetAsync(templateId)).ReturnsAsync(template);
@@ -77,20 +78,20 @@ public class SheetServicesTests
         var result = await _sut.CreateAsync(dto);
 
         result.IsSuccess.Should().BeTrue();
-        
-        _sheetRepositoryMock.Verify(x => x.Add(It.Is<Sheet>(s => 
-            s.Name == "My Sheet" && 
-            s.OwnerId == userId && 
+
+        _sheetRepositoryMock.Verify(x => x.Add(It.Is<Sheet>(s =>
+            s.Name == "My Sheet" &&
+            s.OwnerId == userId &&
             s.TemplateId == templateId &&
             s.Data.ContainsKey(fieldId))), Times.Once);
-            
+
         _unitOfWorkMock.Verify(x => x.CommitAsync(), Times.Once);
     }
 
     [Fact]
     public async Task ComputeDataAsync_SheetNotFound_ReturnsNotFoundError()
     {
-        var dto = new ComputeDto(Guid.NewGuid(), new Dictionary<Guid, object?>());
+        var dto = new ComputeSheetDto(Guid.NewGuid(), new Dictionary<Guid, object?>());
         var userId = Guid.NewGuid();
 
         _computeValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
@@ -110,8 +111,8 @@ public class SheetServicesTests
         var userId = Guid.NewGuid();
         var templateId = Guid.NewGuid();
         var fieldId = Guid.NewGuid();
-        
-        var dto = new ComputeDto(sheetId, new Dictionary<Guid, object?> { { fieldId, 100 } });
+
+        var dto = new ComputeSheetDto(sheetId, new Dictionary<Guid, object?> { { fieldId, 100 } });
         var sheet = new Sheet { Id = sheetId, OwnerId = userId, TemplateId = templateId };
         var template = new Template { Id = templateId };
         template.Structure.Fields.Add(new TemplateField { Id = fieldId, Type = FieldType.Number });

@@ -15,8 +15,8 @@ public class UserServicesTests
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly Mock<IUserContext> _userContextMock;
-    private readonly Mock<IValidator<EditDto>> _editDtoValidatorMock;
-    
+    private readonly Mock<IValidator<EditUserDto>> _editDtoValidatorMock;
+
     private readonly UserServices _sut;
 
     public UserServicesTests()
@@ -24,7 +24,7 @@ public class UserServicesTests
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         _userRepositoryMock = new Mock<IUserRepository>();
         _userContextMock = new Mock<IUserContext>();
-        _editDtoValidatorMock = new Mock<IValidator<EditDto>>();
+        _editDtoValidatorMock = new Mock<IValidator<EditUserDto>>();
 
         _sut = new UserServices(
             _unitOfWorkMock.Object,
@@ -37,7 +37,7 @@ public class UserServicesTests
     [Fact]
     public async Task EditAsync_WithInvalidDto_ReturnsValidationFailure()
     {
-        var dto = new EditDto("A");
+        var dto = new EditUserDto("A");
         var validationResult = new ValidationResult(new[] { new ValidationFailure("DisplayName", "Too short") });
         _editDtoValidatorMock.Setup(x => x.Validate(dto)).Returns(validationResult);
 
@@ -50,9 +50,9 @@ public class UserServicesTests
     [Fact]
     public async Task EditAsync_UserNotFound_ReturnsNotFoundError()
     {
-        var dto = new EditDto("New Name");
+        var dto = new EditUserDto("New Name");
         var userId = Guid.NewGuid();
-        
+
         _editDtoValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
         _userContextMock.Setup(x => x.Id).Returns(userId);
         _userRepositoryMock.Setup(x => x.GetAsync(userId)).ReturnsAsync((User?)null);
@@ -66,10 +66,10 @@ public class UserServicesTests
     [Fact]
     public async Task EditAsync_ValidRequest_UpdatesUserAndReturnsDto()
     {
-        var dto = new EditDto("New Display Name");
+        var dto = new EditUserDto("New Display Name");
         var user = new User { DisplayName = "Old Name", Username = "user123" };
         var userId = user.Id;
-        
+
         _editDtoValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
         _userContextMock.Setup(x => x.Id).Returns(userId);
         _userRepositoryMock.Setup(x => x.GetAsync(userId)).ReturnsAsync(user);
@@ -79,7 +79,7 @@ public class UserServicesTests
         result.IsSuccess.Should().BeTrue();
         result.Value.DisplayName.Should().Be("New Display Name");
         result.Value.Username.Should().Be("user123");
-        
+
         _unitOfWorkMock.Verify(x => x.CommitAsync(), Times.Once);
     }
 }

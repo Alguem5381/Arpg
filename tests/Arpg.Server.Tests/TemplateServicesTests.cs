@@ -21,9 +21,9 @@ public class TemplateServicesTests
     private readonly Mock<ITemplateRepository> _templateRepositoryMock;
     private readonly Mock<ISheetQueries> _sheetRepositoryMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-    private readonly Mock<IValidator<TemplateCreateDto>> _createDtoValidatorMock;
-    private readonly Mock<IValidator<TemplateEditDto>> _editDtoValidatorMock;
-    private readonly Mock<IValidator<TemplateDeleteDto>> _deleteDtoValidatorMock;
+    private readonly Mock<IValidator<NewTemplateDto>> _createDtoValidatorMock;
+    private readonly Mock<IValidator<EditTemplateDto>> _editDtoValidatorMock;
+    private readonly Mock<IValidator<DeleteTemplateDto>> _deleteDtoValidatorMock;
 
     private readonly TemplateServices _sut;
 
@@ -35,9 +35,9 @@ public class TemplateServicesTests
         _templateRepositoryMock = new Mock<ITemplateRepository>();
         _sheetRepositoryMock = new Mock<ISheetQueries>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
-        _createDtoValidatorMock = new Mock<IValidator<TemplateCreateDto>>();
-        _editDtoValidatorMock = new Mock<IValidator<TemplateEditDto>>();
-        _deleteDtoValidatorMock = new Mock<IValidator<TemplateDeleteDto>>();
+        _createDtoValidatorMock = new Mock<IValidator<NewTemplateDto>>();
+        _editDtoValidatorMock = new Mock<IValidator<EditTemplateDto>>();
+        _deleteDtoValidatorMock = new Mock<IValidator<DeleteTemplateDto>>();
 
         _sut = new TemplateServices(
             _userContextMock.Object,
@@ -55,10 +55,10 @@ public class TemplateServicesTests
     [Fact]
     public async Task DeleteAsync_WithWrongPassword_ReturnsUnprocessableEntityError()
     {
-        var dto = new TemplateDeleteDto(Guid.NewGuid(), "wrongpass");
+        var dto = new DeleteTemplateDto(Guid.NewGuid(), "wrongpass");
         var userId = Guid.NewGuid();
         var account = new Account(userId, "test@test.com");
-        
+
         _userContextMock.Setup(x => x.Id).Returns(userId);
         _deleteDtoValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
         _accountRepositoryMock.Setup(x => x.GetOwnerAsync(userId)).ReturnsAsync(account);
@@ -75,11 +75,11 @@ public class TemplateServicesTests
     public async Task DeleteAsync_TemplateHasSheets_ArchivesTemplateInsteadOfDeleting()
     {
         var templateId = Guid.NewGuid();
-        var dto = new TemplateDeleteDto(templateId, "correctpass");
+        var dto = new DeleteTemplateDto(templateId, "correctpass");
         var userId = Guid.NewGuid();
         var account = new Account(userId, "test@test.com");
         var template = new Template { Id = templateId, OwnerId = userId, Name = "Original Name" };
-        
+
         _userContextMock.Setup(x => x.Id).Returns(userId);
         _deleteDtoValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
         _accountRepositoryMock.Setup(x => x.GetOwnerAsync(userId)).ReturnsAsync(account);
@@ -90,15 +90,15 @@ public class TemplateServicesTests
         var result = await _sut.DeleteAsync(dto);
 
         result.IsSuccess.Should().BeTrue();
-        
+
         // Assert it was NOT physically deleted
         _templateRepositoryMock.Verify(x => x.Delete(It.IsAny<Template>()), Times.Never);
-        
+
         // Assert it was Archived
         template.IsArchived.Should().BeTrue();
         template.OwnerId.Should().Be(Guid.Empty);
         template.Name.Should().Be("Deleted template");
-        
+
         _unitOfWorkMock.Verify(x => x.CommitAsync(), Times.Once);
     }
 
@@ -106,11 +106,11 @@ public class TemplateServicesTests
     public async Task DeleteAsync_TemplateHasNoSheets_PhysicallyDeletesTemplate()
     {
         var templateId = Guid.NewGuid();
-        var dto = new TemplateDeleteDto(templateId, "correctpass");
+        var dto = new DeleteTemplateDto(templateId, "correctpass");
         var userId = Guid.NewGuid();
         var account = new Account(userId, "test@test.com");
         var template = new Template { Id = templateId, OwnerId = userId };
-        
+
         _userContextMock.Setup(x => x.Id).Returns(userId);
         _deleteDtoValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
         _accountRepositoryMock.Setup(x => x.GetOwnerAsync(userId)).ReturnsAsync(account);
@@ -121,7 +121,7 @@ public class TemplateServicesTests
         var result = await _sut.DeleteAsync(dto);
 
         result.IsSuccess.Should().BeTrue();
-        
+
         // Assert it WAS physically deleted
         _templateRepositoryMock.Verify(x => x.Delete(template), Times.Once);
         _unitOfWorkMock.Verify(x => x.CommitAsync(), Times.Once);

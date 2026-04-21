@@ -9,24 +9,9 @@ public class UserRepository(AppDbContext db) : Repository<User>(db), IUserReposi
 {
     private readonly AppDbContext _db = db;
 
-    public Task<bool> AnyAsync(Guid id)
-        => _db.Users.AnyAsync(user => user.Id == id);
-
     public Task<bool> AnyAsync(string username)
-        => _db.Users.AnyAsync(user => user.Username == username);
+        => _db.Users.AnyAsync(u => u.Username == username);
 
     public async Task<User?> GetAsync(Guid id)
-        => await _db.Users.FirstOrDefaultAsync(user => user.Id == id);
-
-    public async Task<User?> GetAsync(string username)
-        => await _db.Users.FirstOrDefaultAsync(user => user.Username == username);
-
-    public async Task<User?> GetReadOnlyAsync(Guid id)
-        => await _db.Users.AsNoTracking().FirstOrDefaultAsync(user => user.Id == id);
-
-    public async Task<User?> GetReadOnlyAsync(string username)
-        => await _db.Users.AsNoTracking().FirstOrDefaultAsync(user => user.Username == username);
-
-    public async Task<bool> AnyAll(IEnumerable<Guid> userIds)
-        => await _db.Users.CountAsync(user => userIds.Contains(user.Id)) == userIds.Count();
+        => await _db.Users.FirstOrDefaultAsync(u => u.Id == id);
 }

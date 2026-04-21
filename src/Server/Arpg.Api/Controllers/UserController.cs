@@ -1,8 +1,8 @@
 using Arpg.Application.Auth;
+using Arpg.Application.Queries;
 using Arpg.Application.Services;
 using Arpg.Contracts.Dto.General;
 using Arpg.Contracts.Dto.User;
-using Arpg.Infrastructure.Queries;
 using Arpg.Primitives.Codes;
 using Arpg.Primitives.Constants;
 using Arpg.Primitives.Results;
@@ -14,7 +14,7 @@ namespace Arpg.Api.Controllers;
 public class UserController(
     UserServices userServices,
     AccountServices accountServices,
-    UserQueries userQueries,
+    IUserQueries userQueries,
     IUserContext userContext
 ) : BaseController
 {
@@ -31,7 +31,7 @@ public class UserController(
     [ProducesResponseType(typeof(CodeDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> New([FromBody] NewDto request)
+    public async Task<IActionResult> New([FromBody] NewUserDto request)
     {
         var result = await accountServices.NewAsync(request);
 
@@ -93,7 +93,7 @@ public class UserController(
     [AllowAnonymous]
     [ProducesResponseType(typeof(UserInformationDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetFlat(string username)
+    public async Task<IActionResult> GetFlat([FromRoute] string username)
     {
         var user = await userQueries.GetSimpleAsync(username);
 
@@ -138,7 +138,7 @@ public class UserController(
     [ProducesResponseType(typeof(SuccessDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Edit([FromBody] EditDto request)
+    public async Task<IActionResult> Edit([FromBody] EditUserDto request)
     {
         var result = await userServices.EditAsync(request);
 
@@ -162,7 +162,7 @@ public class UserController(
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status422UnprocessableEntity)]
-    public async Task<IActionResult> Delete([FromBody] DeleteDto request)
+    public async Task<IActionResult> Delete([FromBody] DeleteUserDto request)
     {
         var result = await accountServices.DeleteAsync(request);
 

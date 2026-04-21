@@ -20,10 +20,10 @@ public class AccountServicesTests
     private readonly Mock<ICodeRepository> _codeRepositoryMock = new();
     private readonly Mock<IAccountRepository> _accountRepositoryMock = new();
     private readonly Mock<IPasswordHasher> _passwordHasherMock = new();
-    private readonly Mock<IValidator<NewDto>> _newDtoValidatorMock = new();
+    private readonly Mock<IValidator<NewUserDto>> _newDtoValidatorMock = new();
     private readonly Mock<IValidator<LoginDto>> _loginDtoValidatorMock = new();
     private readonly Mock<IValidator<ValidateCodeDto>> _validateCodeDtoValidatorMock = new();
-    private readonly Mock<IValidator<DeleteDto>> _deleteDtoValidatorMock = new();
+    private readonly Mock<IValidator<DeleteUserDto>> _deleteDtoValidatorMock = new();
     private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
 
     private readonly AccountServices _sut;
