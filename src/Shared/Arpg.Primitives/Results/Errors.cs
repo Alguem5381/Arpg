@@ -12,4 +12,4 @@ public class ForbiddenError(string message) : DomainError(message);
 
 public class UnauthorizedError(string message) : DomainError(message);
 
-public class UnprocessableEntityError(string message) : DomainError(message);
+public class UnprocessableError(string message) : DomainError(message);

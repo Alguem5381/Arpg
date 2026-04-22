@@ -58,7 +58,7 @@ public class TemplateController(
 
         if (template == null)
             return ToFailResults(Result.Fail(new NotFoundError("Template not found.")
-                .WithMetadata(MetadataKey.Error, TemplateCodes.TemplateNotFound)));
+                .With(Key.Error, TemplateCodes.TemplateNotFound)));
 
         return Ok(template);
     }

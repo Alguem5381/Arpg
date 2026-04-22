@@ -8,7 +8,7 @@ public class Error(string message)
     public string Message { get; protected set; } = message;
     public Dictionary<string, object> Metadata { get; protected set; } = [];
 
-    public Error WithMetadata(string key, object value)
+    public Error With(string key, object value)
     {
         Metadata[key] = value;
         return this;
@@ -16,7 +16,7 @@ public class Error(string message)
 
     public string GetCode()
     {
-        Metadata.TryGetValue(MetadataKey.Error, out var obj);
+        Metadata.TryGetValue(Key.Error, out var obj);
 
         return obj as string ?? this switch
         {

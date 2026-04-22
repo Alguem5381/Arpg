@@ -1,6 +1,6 @@
 namespace Arpg.Primitives.Constants;
 
-public static class MetadataKey
+public static class Key
 {
     public const string Error = nameof(Error);
     public const string PropertyName = nameof(PropertyName);

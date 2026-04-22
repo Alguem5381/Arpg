@@ -61,7 +61,7 @@ public class TemplateServicesTests
 
         _userContextMock.Setup(x => x.Id).Returns(userId);
         _deleteDtoValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
-        _accountRepositoryMock.Setup(x => x.GetOwnerAsync(userId)).ReturnsAsync(account);
+        _accountRepositoryMock.Setup(x => x.GetByOwnerAsync(userId)).ReturnsAsync(account);
         _passwordHasherMock.Setup(x => x.Verify("wrongpass", It.IsAny<string>())).Returns(false);
 
         var result = await _sut.DeleteAsync(dto);
@@ -82,7 +82,7 @@ public class TemplateServicesTests
 
         _userContextMock.Setup(x => x.Id).Returns(userId);
         _deleteDtoValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
-        _accountRepositoryMock.Setup(x => x.GetOwnerAsync(userId)).ReturnsAsync(account);
+        _accountRepositoryMock.Setup(x => x.GetByOwnerAsync(userId)).ReturnsAsync(account);
         _passwordHasherMock.Setup(x => x.Verify("correctpass", It.IsAny<string>())).Returns(true);
         _templateRepositoryMock.Setup(x => x.GetAsync(templateId, userId)).ReturnsAsync(template);
         _sheetRepositoryMock.Setup(x => x.AnyByTemplate(templateId)).ReturnsAsync(true);
@@ -113,7 +113,7 @@ public class TemplateServicesTests
 
         _userContextMock.Setup(x => x.Id).Returns(userId);
         _deleteDtoValidatorMock.Setup(x => x.Validate(dto)).Returns(new ValidationResult());
-        _accountRepositoryMock.Setup(x => x.GetOwnerAsync(userId)).ReturnsAsync(account);
+        _accountRepositoryMock.Setup(x => x.GetByOwnerAsync(userId)).ReturnsAsync(account);
         _passwordHasherMock.Setup(x => x.Verify("correctpass", It.IsAny<string>())).Returns(true);
         _templateRepositoryMock.Setup(x => x.GetAsync(templateId, userId)).ReturnsAsync(template);
         _sheetRepositoryMock.Setup(x => x.AnyByTemplate(templateId)).ReturnsAsync(false);

@@ -30,9 +30,9 @@ public class TemplateStructure
             .Where(f => !validCategoryIds.Contains(f.CategoryId))
             .Select(f =>
                 new ValidationError($"Field '{f.Name}' references a missing Category ({f.CategoryId}).")
-                    .WithMetadata(MetadataKey.Error, StructureCodes.OrphanField)
-                    .WithMetadata(MetadataKey.Category, f.CategoryId)
-                    .WithMetadata(MetadataKey.Field, f.Id)));
+                    .With(Key.Error, StructureCodes.OrphanField)
+                    .With(Key.Category, f.CategoryId)
+                    .With(Key.Field, f.Id)));
 
         return errors.Count > 0 ? Result.Fail(errors) : Result.Ok();
 
@@ -44,7 +44,7 @@ public class TemplateStructure
                 Operation.Edit => EditCategory(structure, op),
                 Operation.Delete => DeleteCategory(structure, op),
                 _ => Result.Fail(new Error("Invalid operation")
-                    .WithMetadata(MetadataKey.Error, StructureCodes.InvalidStructureOperation))
+                    .With(Key.Error, StructureCodes.InvalidStructureOperation))
             };
         }
 
@@ -52,8 +52,8 @@ public class TemplateStructure
         {
             if (structure.Categories.Any(c => c.Id == op.Id))
                 return Result.Fail(new ValidationError("Category ID conflict.")
-                    .WithMetadata(MetadataKey.Error, StructureCodes.CategoryConflict)
-                    .WithMetadata(MetadataKey.Category, op.Id));
+                    .With(Key.Error, StructureCodes.CategoryConflict)
+                    .With(Key.Category, op.Id));
 
             structure.Categories.Add(new TemplateCategory
             {
@@ -69,8 +69,8 @@ public class TemplateStructure
             var cat = structure.Categories.FirstOrDefault(c => c.Id == op.Id);
             if (cat == null)
                 return Result.Fail(new ValidationError("Category not found.")
-                    .WithMetadata(MetadataKey.Error, StructureCodes.CategoryNotFound)
-                    .WithMetadata(MetadataKey.Category, op.Id));
+                    .With(Key.Error, StructureCodes.CategoryNotFound)
+                    .With(Key.Category, op.Id));
 
             if (op.Name != null) cat.Name = op.Name;
             if (op.Order != null) cat.Order = op.Order.Value;
@@ -83,8 +83,8 @@ public class TemplateStructure
             var cat = structure.Categories.FirstOrDefault(c => c.Id == op.Id);
             if (cat == null)
                 return Result.Fail(new ValidationError("Category not found.")
-                    .WithMetadata(MetadataKey.Error, StructureCodes.CategoryNotFound)
-                    .WithMetadata(MetadataKey.Category, op.Id));
+                    .With(Key.Error, StructureCodes.CategoryNotFound)
+                    .With(Key.Category, op.Id));
 
             structure.Categories.Remove(cat);
             return Result.Ok();
@@ -98,7 +98,7 @@ public class TemplateStructure
                 Operation.Edit => EditField(structure, op),
                 Operation.Delete => DeleteField(structure, op),
                 _ => Result.Fail(new Error("Invalid operation")
-                    .WithMetadata(MetadataKey.Error, StructureCodes.InvalidStructureOperation))
+                    .With(Key.Error, StructureCodes.InvalidStructureOperation))
             };
         }
 
@@ -106,15 +106,15 @@ public class TemplateStructure
         {
             if (structure.Fields.Any(f => f.Id == op.Id))
                 return Result.Fail(new ValidationError("Field ID conflict.")
-                    .WithMetadata(MetadataKey.Error, StructureCodes.FieldIdConflict)
-                    .WithMetadata(MetadataKey.Category, op.CategoryId)
-                    .WithMetadata(MetadataKey.Field, op.Id));
+                    .With(Key.Error, StructureCodes.FieldIdConflict)
+                    .With(Key.Category, op.CategoryId)
+                    .With(Key.Field, op.Id));
 
             if (!TypeChecker.IsValueValidForType(op.DefaultValue, op.Type ?? FieldType.Text))
                 return Result.Fail(new ValidationError("Default value does not match field type.")
-                    .WithMetadata(MetadataKey.Error, StructureCodes.FieldAndTypeMismatch)
-                    .WithMetadata(MetadataKey.Category, op.CategoryId)
-                    .WithMetadata(MetadataKey.Field, op.Id));
+                    .With(Key.Error, StructureCodes.FieldAndTypeMismatch)
+                    .With(Key.Category, op.CategoryId)
+                    .With(Key.Field, op.Id));
 
             structure.Fields.Add(new TemplateField
             {
@@ -135,9 +135,9 @@ public class TemplateStructure
 
             if (field == null)
                 return Result.Fail(new ValidationError("Field not found.")
-                    .WithMetadata(MetadataKey.Error, StructureCodes.FieldNotFound)
-                    .WithMetadata(MetadataKey.Category, op.CategoryId)
-                    .WithMetadata(MetadataKey.Field, op.Id));
+                    .With(Key.Error, StructureCodes.FieldNotFound)
+                    .With(Key.Category, op.CategoryId)
+                    .With(Key.Field, op.Id));
 
             var typeToCheck = op.Type ?? field.Type;
             object? valueToCheck;
@@ -149,9 +149,9 @@ public class TemplateStructure
 
             if (!TypeChecker.IsValueValidForType(valueToCheck, typeToCheck))
                 return Result.Fail(new ValidationError("Value incompatible with Type.")
-                    .WithMetadata(MetadataKey.Error, StructureCodes.FieldAndTypeMismatch)
-                    .WithMetadata(MetadataKey.Category, op.CategoryId)
-                    .WithMetadata(MetadataKey.Field, op.Id));
+                    .With(Key.Error, StructureCodes.FieldAndTypeMismatch)
+                    .With(Key.Category, op.CategoryId)
+                    .With(Key.Field, op.Id));
 
             if (op.Name != null) field.Name = op.Name;
             if (op.CategoryId != Guid.Empty) field.CategoryId = op.CategoryId;
@@ -169,9 +169,9 @@ public class TemplateStructure
 
             if (field == null)
                 return Result.Fail(new ValidationError("Field not found.")
-                    .WithMetadata(MetadataKey.Error, StructureCodes.FieldNotFound)
-                    .WithMetadata(MetadataKey.Category, op.CategoryId)
-                    .WithMetadata(MetadataKey.Field, op.Id));
+                    .With(Key.Error, StructureCodes.FieldNotFound)
+                    .With(Key.Category, op.CategoryId)
+                    .With(Key.Field, op.Id));
 
             structure.Fields.Remove(field);
             return Result.Ok();

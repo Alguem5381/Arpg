@@ -10,8 +10,11 @@ public class UserRepository(AppDbContext db) : Repository<User>(db), IUserReposi
     private readonly AppDbContext _db = db;
 
     public Task<bool> AnyAsync(string username)
-        => _db.Users.AnyAsync(u => u.Username == username);
+        => _db.Users.AnyAsync(user => user.Username == username);
 
     public async Task<User?> GetAsync(Guid id)
-        => await _db.Users.FirstOrDefaultAsync(u => u.Id == id);
+        => await _db.Users.FirstOrDefaultAsync(user => user.Id == id);
+
+    public async Task<User?> GetAsync(string username)
+        => await _db.Users.FirstOrDefaultAsync(user => user.Username == username);
 }
