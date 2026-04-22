@@ -51,7 +51,7 @@ public class TemplateServices(
 
         if (template == null)
             return Result.Fail(new NotFoundError("Template not found.")
-                .WithMetadata(MetadataKey.Error, TemplateCodes.TemplateNotFound));
+                .With(Key.Error, TemplateCodes.TemplateNotFound));
 
         template.Name = dto.Name;
         template.Description = dto.Description;
@@ -67,17 +67,17 @@ public class TemplateServices(
         if (validation.IsFailed)
             return validation;
 
-        var account = await accountRepository.GetOwnerAsync(userContext.Id);
+        var account = await accountRepository.GetByOwnerAsync(userContext.Id);
 
         if (account == null || !account.PasswordMatches(dto.Password, passwordHasher))
-            return Result.Fail(new UnprocessableEntityError("Invalid password.")
-                .WithMetadata(MetadataKey.Error, UserCodes.InvalidCredentials));
+            return Result.Fail(new UnprocessableError("Invalid password.")
+                .With(Key.Error, UserCodes.InvalidCredentials));
 
         var template = await templateRepository.GetAsync(dto.Id, userContext.Id);
 
         if (template == null)
             return Result.Fail(new NotFoundError("Template not found.")
-                .WithMetadata(MetadataKey.Error, TemplateCodes.TemplateNotFound));
+                .With(Key.Error, TemplateCodes.TemplateNotFound));
 
         var hasSheets = await sheetRepository.AnyByTemplate(dto.Id);
 

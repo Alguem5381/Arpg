@@ -37,15 +37,15 @@ public class AccountServices(
             return validation;
 
         if (await userRepository.AnyAsync(dto.Username))
-            return Result.Fail(new ConflictError("Username already exists.")
-                .WithMetadata(MetadataKey.Error, UserCodes.UserConflict));
+            return new ConflictError("Username already exists.")
+                .With(Key.Error, UserCodes.UserConflict);
 
         if (await accountRepository.AnyAsync(dto.Email))
-            return Result.Fail(new ValidationError("Invalid email.")
-                .WithMetadata(MetadataKey.Error, DataFormatCodes.InvalidEmail)
-                .WithMetadata(MetadataKey.PropertyName, nameof(NewUserDto.Email))
-                .WithMetadata("PropertyValue", dto.Email)
-                .WithMetadata("PropertyPath", nameof(NewUserDto.Email)));
+            return new ValidationError("Invalid email.")
+                .With(Key.Error, DataFormatCodes.InvalidEmail)
+                .With(Key.PropertyName, nameof(NewUserDto.Email))
+                .With("PropertyValue", dto.Email)
+                .With("PropertyPath", nameof(NewUserDto.Email));
 
         var user = _userMapper.NewDtoToUser(dto);
         var account = new Account(user.Id, dto.Email);
@@ -70,22 +70,28 @@ public class AccountServices(
         if (validation.IsFailed)
             return validation;
 
-        var account = await accountRepository.GetAsync(dto.Username);
+        var user = await userRepository.GetAsync(dto.Username);
+
+        if (user is null)
+            return new UnauthorizedError("Invalid credentials")
+                .With(Key.Error, UserCodes.InvalidCredentials);
+
+        var account = await accountRepository.GetByOwnerAsync(user.Id);
 
         if (account is null)
-            return Result.Fail(new UnauthorizedError("Invalid credentials")
-                .WithMetadata(MetadataKey.Error, UserCodes.InvalidCredentials));
+            return new UnauthorizedError("Invalid credentials")
+                .With(Key.Error, UserCodes.InvalidCredentials);
 
         if (account.IsLockedOut())
-            return Result.Fail(new UnauthorizedError("Account is temporarily locked out due to multiple failed login attempts.")
-                    .WithMetadata(MetadataKey.Error, UserCodes.AccountLocked));
+            return new UnauthorizedError("Account is temporarily locked out due to multiple failed login attempts.")
+                .With(Key.Error, UserCodes.AccountLocked);
 
         if (!account.PasswordMatches(dto.Password, passwordHasher))
         {
             account.RecordFailedLogin();
             await unitOfWork.CommitAsync();
-            return Result.Fail(new UnauthorizedError("Invalid credentials")
-                .WithMetadata(MetadataKey.Error, UserCodes.InvalidCredentials));
+            return new UnauthorizedError("Invalid credentials")
+                .With(Key.Error, UserCodes.InvalidCredentials);
         }
 
         account.ResetFailedLogins();
@@ -120,18 +126,21 @@ public class AccountServices(
         var code = await codeRepository.GetCode(dto.Key);
 
         if (code == null)
-            return Result.Fail(new NotFoundError("Code not found")
-                .WithMetadata(MetadataKey.Error, CodeCodes.CodeNotFound));
+            return new NotFoundError("Code not found")
+                .With(Key.Error, CodeCodes.CodeNotFound);
 
         if (code.Value != dto.Value || code.Key != dto.Key)
-            return Result.Fail(new UnauthorizedError("Invalid code")
-                .WithMetadata(MetadataKey.Error, CodeCodes.InvalidCode));
+            return new UnauthorizedError("Invalid code")
+                .With(Key.Error, CodeCodes.InvalidCode);
 
         var user = await userRepository.GetAsync(code.OwnerId);
+        var account = await accountRepository.GetByOwnerAsync(code.OwnerId);
 
-        if (user == null)
-            return Result.Fail(new UnprocessableEntityError("Cannot solve this code")
-                .WithMetadata(MetadataKey.Error, GeneralCodes.NotFound));
+        if (user == null || account == null)
+            return new UnprocessableError("Cannot solve this code")
+                .With(Key.Error, GeneralCodes.NotFound);
+
+        account.IsValid = true;
 
         codeRepository.Delete(code);
         await unitOfWork.CommitAsync();
@@ -145,17 +154,17 @@ public class AccountServices(
         if (validation.IsFailed)
             return validation;
 
-        var account = await accountRepository.GetOwnerAsync(userContext.Id);
+        var account = await accountRepository.GetByOwnerAsync(userContext.Id);
 
         if (account == null || !account.PasswordMatches(dto.Password, passwordHasher))
-            return Result.Fail(new UnprocessableEntityError("Invalid credentials.")
-                .WithMetadata(MetadataKey.Error, UserCodes.InvalidCredentials));
+            return new UnprocessableError("Invalid credentials.")
+                .With(Key.Error, UserCodes.InvalidCredentials);
 
         var user = await userRepository.GetAsync(userContext.Id);
 
         if (user == null)
-            return Result.Fail(new NotFoundError("User not found.")
-                .WithMetadata(MetadataKey.Error, UserCodes.UserNotFound));
+            return new NotFoundError("User not found.")
+                .With(Key.Error, UserCodes.UserNotFound);
 
         accountRepository.Delete(account);
         userRepository.Delete(user);

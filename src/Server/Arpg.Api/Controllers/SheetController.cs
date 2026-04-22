@@ -62,7 +62,7 @@ public class SheetController(
 
         if (sheet == null)
             return ToFailResults(Result.Fail(new NotFoundError("Sheet not found.")
-                .WithMetadata(MetadataKey.Error, SheetCodes.SheetNotFound)));
+                .With(Key.Error, SheetCodes.SheetNotFound)));
 
         return Ok(sheet);
     }

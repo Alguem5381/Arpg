@@ -28,7 +28,7 @@ public class UserServices(
 
         if (user == null)
             return Result.Fail(new NotFoundError("User not found.")
-                .WithMetadata(MetadataKey.Error, UserCodes.UserNotFound));
+                .With(Key.Error, UserCodes.UserNotFound));
 
         user.DisplayName = dto.DisplayName;
 

@@ -18,12 +18,12 @@ public class BaseService
         var errors = validationResult.Errors.Select(e =>
         {
             var error = new ValidationError(e.ErrorMessage)
-                .WithMetadata(MetadataKey.Error, e.ErrorCode);
+                .With(Key.Error, e.ErrorCode);
 
             if (e.FormattedMessagePlaceholderValues is null) return error;
 
             foreach (var (key, value) in e.FormattedMessagePlaceholderValues)
-                error.WithMetadata(key, value);
+                error.With(key, value);
 
             return error;
         });
@@ -48,12 +48,12 @@ public class BaseService
             {
                 var error = new ValidationError(e.ErrorMessage);
 
-                error.WithMetadata(MetadataKey.Error, e.ErrorCode);
+                error.With(Key.Error, e.ErrorCode);
 
                 if (e.FormattedMessagePlaceholderValues is null) return error;
 
                 foreach (var placeholder in e.FormattedMessagePlaceholderValues)
-                    error.WithMetadata(placeholder.Key, placeholder.Value);
+                    error.With(placeholder.Key, placeholder.Value);
 
                 return error;
             }));

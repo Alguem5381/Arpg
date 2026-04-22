@@ -9,7 +9,7 @@ public class AccountRepository(AppDbContext db) : Repository<Account>(db), IAcco
 {
     private readonly AppDbContext _db = db;
 
-    public async Task<Account?> GetOwnerAsync(Guid ownerId)
+    public async Task<Account?> GetByOwnerAsync(Guid ownerId)
         => await _db.Accounts.FirstOrDefaultAsync(account => account.OwnerId == ownerId);
 
     public async Task<Account?> GetAsync(Guid id)

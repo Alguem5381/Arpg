@@ -22,7 +22,7 @@ public class StructureServices(
 
         if (template is null)
             return Result.Fail(new NotFoundError("Template not found.")
-                .WithMetadata(MetadataKey.Error, TemplateCodes.TemplateNotFound));
+                .With(Key.Error, TemplateCodes.TemplateNotFound));
 
         var update = _structureMapper.BatchUpdateDtoToBatchUpdate(batch);
 

@@ -31,7 +31,7 @@ public class SheetServices(
 
         if (template == null)
             return Result.Fail(new NotFoundError("Template not found.")
-                .WithMetadata(MetadataKey.Error, TemplateCodes.TemplateNotFound));
+                .With(Key.Error, TemplateCodes.TemplateNotFound));
 
         var sheet = _sheetMapper.SheetCreateDto(dto);
 
@@ -58,13 +58,13 @@ public class SheetServices(
 
         if (sheet == null)
             return Result.Fail(new NotFoundError("Sheet not found.")
-                .WithMetadata(MetadataKey.Error, SheetCodes.SheetNotFound));
+                .With(Key.Error, SheetCodes.SheetNotFound));
 
         var template = await templateRepository.GetAsync(sheet.TemplateId);
 
         if (template == null)
             return Result.Fail(new ValidationError("Template not found.")
-                .WithMetadata(MetadataKey.Error, TemplateCodes.TemplateNotFound));
+                .With(Key.Error, TemplateCodes.TemplateNotFound));
 
         var result = sheet.ComputeData(dto.Data, template.Structure);
 
@@ -86,7 +86,7 @@ public class SheetServices(
 
         if (sheet == null)
             return Result.Fail(new NotFoundError("Sheet not found.")
-                .WithMetadata(MetadataKey.Error, SheetCodes.SheetNotFound));
+                .With(Key.Error, SheetCodes.SheetNotFound));
 
         sheet.Name = dto.Name;
 
@@ -101,7 +101,7 @@ public class SheetServices(
 
         if (sheet == null)
             return Result.Fail(new NotFoundError("Sheet not found")
-                .WithMetadata(MetadataKey.Error, SheetCodes.SheetNotFound));
+                .With(Key.Error, SheetCodes.SheetNotFound));
 
         sheetRepository.Delete(sheet);
         await unitOfWork.CommitAsync();

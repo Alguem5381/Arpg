@@ -99,7 +99,7 @@ public class UserController(
 
         if (user == null)
             return ToFailResults(Result.Fail(new NotFoundError("Username not found.")
-                .WithMetadata(MetadataKey.Error, UserCodes.UserNotFound)));
+                .With(Key.Error, UserCodes.UserNotFound)));
 
         return Ok(user);
     }
@@ -120,7 +120,7 @@ public class UserController(
 
         if (result == null)
             return ToFailResults(Result.Fail(new NotFoundError("User not found.")
-                .WithMetadata(MetadataKey.Error, UserCodes.UserNotFound)));
+                .With(Key.Error, UserCodes.UserNotFound)));
 
         return Ok(result);
     }

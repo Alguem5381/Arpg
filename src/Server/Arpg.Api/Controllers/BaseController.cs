@@ -27,7 +27,7 @@ public class BaseController : ControllerBase
         {
             NotFoundError or ForbiddenError => NotFound(response),
             ConflictError => Conflict(response),
-            ValidationError or UnprocessableEntityError => UnprocessableEntity(response),
+            ValidationError or UnprocessableError => UnprocessableEntity(response),
             UnauthorizedError => Unauthorized(response),
             _ => BadRequest(response)
         };
