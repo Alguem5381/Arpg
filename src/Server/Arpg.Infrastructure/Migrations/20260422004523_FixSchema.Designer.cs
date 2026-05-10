@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Arpg.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Arpg.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260422004523_FixSchema")]
+    partial class FixSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -171,16 +174,16 @@ namespace Arpg.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.PrimitiveCollection<List<Guid>>("PlayerIds")
+                        .IsRequired()
+                        .HasColumnType("uuid[]");
+
                     b.PrimitiveCollection<List<Guid>>("SheetIds")
                         .IsRequired()
                         .HasColumnType("uuid[]");
 
                     b.Property<Guid>("TemplateId")
                         .HasColumnType("uuid");
-
-                    b.PrimitiveCollection<List<Guid>>("UserIds")
-                        .IsRequired()
-                        .HasColumnType("uuid[]");
 
                     b.HasKey("Id");
 

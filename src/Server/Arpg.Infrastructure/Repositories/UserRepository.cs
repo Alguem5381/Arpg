@@ -17,4 +17,13 @@ public class UserRepository(AppDbContext db) : Repository<User>(db), IUserReposi
 
     public async Task<User?> GetAsync(string username)
         => await _db.Users.FirstOrDefaultAsync(user => user.Username == username);
+
+    public async Task<bool> AnyAll(IEnumerable<Guid> playerIds)
+        => await _db.Users.CountAsync(u => playerIds.Contains(u.Id)) == playerIds.Distinct().Count();
+
+    public async Task<List<Guid>> FilterExistingAsync(IEnumerable<Guid> userIds)
+        => await _db.Users
+            .Where(u => userIds.Contains(u.Id))
+            .Select(u => u.Id)
+            .ToListAsync();
 }

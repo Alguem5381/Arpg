@@ -7,23 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Arpg.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class GameTable : Migration
+    public partial class FixSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Sheets_Users_UserId",
-                table: "Sheets");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Sheets_UserId",
-                table: "Sheets");
-
-            migrationBuilder.DropColumn(
-                name: "UserId",
-                table: "Sheets");
-
             migrationBuilder.CreateTable(
                 name: "GameTables",
                 columns: table => new
@@ -47,24 +35,6 @@ namespace Arpg.Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "GameTables");
-
-            migrationBuilder.AddColumn<Guid>(
-                name: "UserId",
-                table: "Sheets",
-                type: "uuid",
-                nullable: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Sheets_UserId",
-                table: "Sheets",
-                column: "UserId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Sheets_Users_UserId",
-                table: "Sheets",
-                column: "UserId",
-                principalTable: "Users",
-                principalColumn: "Id");
         }
     }
 }

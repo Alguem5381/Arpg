@@ -2,7 +2,7 @@ using Arpg.Primitives.Enums.Template;
 
 namespace Arpg.Contracts.Dto.GameTable;
 
-public record NewDto(string Name, Guid TemplateId);
+public record NewTableDto(string Name, Guid TemplateId);
 
 public record SimpleGameTableDto(Guid Id, string Name, Guid DmId, Guid TemplateId, DateTime CreatedAt);
 
@@ -13,8 +13,8 @@ public record GameTableDto(
     string Name,
     Guid DmId,
     Guid TemplateId,
-    List<Guid> PlayerIds,
+    List<Guid> UserIds,
     List<Guid> SheetIds,
     DateTime CreatedAt);
 
-public record GameTableOperationDto(Operation Operation, Guid Id);
+public record GameTableOperationDto(Operation? Operation, Guid Id);

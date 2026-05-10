@@ -1,11 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
+using Arpg.Application.Auth;
+using Arpg.Application.Queries;
 using Arpg.Application.Services;
 using Arpg.Contracts.Dto.GameTable;
 using Arpg.Contracts.Dto.General;
+using Arpg.Contracts.Dto.Sheet;
+using Arpg.Contracts.Dto.User;
 
 namespace Arpg.Api.Controllers;
 
-public class GameTableController(GameTableServices gameTableServices) : BaseController
+public class GameTableController(
+    GameTableServices gameTableServices,
+    IGameTableQueries gameTableQueries,
+    IUserContext userContext
+) : BaseController
 {
     /// <summary>
     /// Cria uma nova mesa.
@@ -18,7 +26,7 @@ public class GameTableController(GameTableServices gameTableServices) : BaseCont
     [HttpPost]
     [ProducesResponseType(typeof(GameTableDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Create([FromBody] NewDto request)
+    public async Task<IActionResult> Create([FromBody] NewTableDto request)
     {
         var result = await gameTableServices.CreateAsync(request);
 
@@ -34,14 +42,14 @@ public class GameTableController(GameTableServices gameTableServices) : BaseCont
     /// <response code="401">**Unauthorized**: Usuário não autenticado.</response>
     /// <response code="404">**NotFound**: Mesa não encontrada.</response>
     /// <response code="422">**UnprocessableEntity**: Jogador não existe ou operações inválidas.</response>
-    [HttpPost("player")]
+    [HttpPost("user")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status422UnprocessableEntity)]
-    public async Task<IActionResult> UpdatePlayers([FromBody] GameTableBatchDto request)
+    public async Task<IActionResult> UpdateUsers([FromBody] GameTableBatchDto request)
     {
-        var result = await gameTableServices.UpdatePlayersAsync(request);
+        var result = await gameTableServices.UpdateUsersAsync(request);
 
         return result.IsFailed ? ToFailResults(result) : Ok();
     }
@@ -83,4 +91,47 @@ public class GameTableController(GameTableServices gameTableServices) : BaseCont
 
         return result.IsFailed ? ToFailResults(result) : NoContent();
     }
+
+    /// <summary>
+    /// Retorna todas as mesas do mestre autenticado.
+    /// </summary>
+    /// <response code="200">Lista de mesas retornada com sucesso.</response>
+    /// <response code="401">**Unauthorized**: Usuário não autenticado.</response>
+    [HttpGet]
+    [ProducesResponseType(typeof(List<SimpleGameTableDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAll()
+        => Ok(await gameTableQueries.GetAllAsync(userContext.Id));
+
+    /// <summary>
+    /// Retorna todos os jogadores de uma mesa (versão simplificada).
+    /// </summary>
+    /// <param name="tableId">Identificador da mesa.</param>
+    /// <response code="200">Lista de jogadores retornada com sucesso.</response>
+    /// <response code="401">**Unauthorized**: Usuário não autenticado.</response>
+    [HttpGet("{tableId:guid}/users")]
+    [ProducesResponseType(typeof(List<UserInformationDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetPlayers([FromRoute] Guid tableId)
+        => Ok(await gameTableQueries.GetUsersAsync(tableId, userContext.Id));
+
+    /// <summary>
+    /// Retorna todas as fichas de uma mesa (visão do mestre).
+    /// </summary>
+    /// <param name="tableId">Identificador da mesa.</param>
+    /// <response code="200">Lista de fichas retornada com sucesso.</response>
+    /// <response code="401">**Unauthorized**: Usuário não autenticado.</response>
+    [HttpGet("{tableId:guid}/sheets")]
+    [ProducesResponseType(typeof(List<SimpleSheetDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAllSheets([FromRoute] Guid tableId)
+        => Ok(await gameTableQueries.GetAllSheetsAsync(tableId, userContext.Id));
+
+    /// <summary>
+    /// Retorna as fichas do jogador autenticado em uma mesa.
+    /// </summary>
+    /// <param name="tableId">Identificador da mesa.</param>
+    /// <response code="200">Lista de fichas do jogador retornada com sucesso.</response>
+    /// <response code="401">**Unauthorized**: Usuário não autenticado.</response>
+    [HttpGet("{tableId:guid}/my-sheets")]
+    [ProducesResponseType(typeof(List<SimpleSheetDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetMySheets([FromRoute] Guid tableId)
+        => Ok(await gameTableQueries.GetUserSheetsAsync(tableId, userContext.Id));
 }

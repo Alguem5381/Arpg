@@ -1,3 +1,4 @@
+using Arpg.Primitives.Codes;
 using Arpg.Primitives.Constants;
 using Arpg.Primitives.Results;
 using FluentValidation;
@@ -8,7 +9,9 @@ public class BaseService
 {
     protected static Result Validate<T>(IValidator<T> validator, T model)
     {
-        ArgumentNullException.ThrowIfNull(validator);
+        if (model is null)
+            return new ValidationError("Invalid Request")
+                .With(Key.Error, DataFormatCodes.Required);
 
         var validationResult = validator.Validate(model);
 
@@ -31,9 +34,11 @@ public class BaseService
         return Result.Fail(errors);
     }
 
-    protected static Result Validate<T>(IValidator<T> validator, IEnumerable<T> models)
+    protected static Result Validate<T>(IValidator<T> validator, IEnumerable<T>? models)
     {
-        ArgumentNullException.ThrowIfNull(validator);
+        if (models is null)
+            return new ValidationError("Invalid Request")
+                .With(Key.Error, DataFormatCodes.Required);
 
         var errors = new List<ValidationError>();
 

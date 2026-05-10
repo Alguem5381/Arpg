@@ -17,7 +17,7 @@ public class BaseController : ControllerBase
 
         if (result.Errors.Count > 1)
         {
-            var allUnprocessable = result.Errors.All(e => e is ValidationError or UnprocessableEntityError);
+            var allUnprocessable = result.Errors.All(e => e is ValidationError or UnprocessableError);
             return allUnprocessable ? UnprocessableEntity(response) : BadRequest(response);
         }
 

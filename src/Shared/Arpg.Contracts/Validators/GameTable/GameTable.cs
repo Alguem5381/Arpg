@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace Arpg.Contracts.Validators.GameTable;
 
-public class NewGameTableValidator : AbstractValidator<NewDto>
+public class NewGameTableValidator : AbstractValidator<NewTableDto>
 {
     public NewGameTableValidator()
     {
@@ -23,9 +23,9 @@ public class NewGameTableValidator : AbstractValidator<NewDto>
     }
 }
 
-public class PlayerOperationValidator : AbstractValidator<GameTableOperationDto>
+public class OperationValidator : AbstractValidator<GameTableOperationDto>
 {
-    public PlayerOperationValidator()
+    public OperationValidator()
     {
         RuleFor(x => x.Id)
             .NotEmpty()
@@ -33,8 +33,8 @@ public class PlayerOperationValidator : AbstractValidator<GameTableOperationDto>
             .WithErrorCode(DataFormatCodes.Required);
 
         RuleFor(x => x.Operation)
-            .NotEmpty()
-            .WithMessage("Op is required.")
+            .NotNull()
+            .WithMessage("Operation is required.")
             .WithErrorCode(DataFormatCodes.Required);
     }
 }

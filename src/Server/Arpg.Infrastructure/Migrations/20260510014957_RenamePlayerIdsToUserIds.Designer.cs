@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Arpg.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260404044245_GameTable")]
-    partial class GameTable
+    [Migration("20260510014957_RenamePlayerIdsToUserIds")]
+    partial class RenamePlayerIdsToUserIds
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,27 +46,19 @@ namespace Arpg.Infrastructure.Migrations
                     b.Property<DateTime?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.HasIndex("Username")
+                    b.HasIndex("OwnerId")
                         .IsUnique();
 
                     b.ToTable("Accounts");
@@ -107,6 +99,10 @@ namespace Arpg.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
@@ -131,44 +127,14 @@ namespace Arpg.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("OwnerId")
+                    b.Property<Guid>("OwnerId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Templates");
-                });
-
-            modelBuilder.Entity("Arpg.Core.Models.GameTable", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("DmId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.PrimitiveCollection<List<Guid>>("PlayerIds")
-                        .IsRequired()
-                        .HasColumnType("uuid[]");
-
-                    b.PrimitiveCollection<List<Guid>>("SheetIds")
-                        .IsRequired()
-                        .HasColumnType("uuid[]");
-
-                    b.Property<Guid>("TemplateId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("GameTables");
                 });
 
             modelBuilder.Entity("Arpg.Core.Models.Sheet", b =>
@@ -192,11 +158,43 @@ namespace Arpg.Infrastructure.Migrations
                     b.ToTable("Sheets");
                 });
 
+            modelBuilder.Entity("Arpg.Core.Models.Tabletop.GameTable", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("DmId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.PrimitiveCollection<List<Guid>>("SheetIds")
+                        .IsRequired()
+                        .HasColumnType("uuid[]");
+
+                    b.Property<Guid>("TemplateId")
+                        .HasColumnType("uuid");
+
+                    b.PrimitiveCollection<List<Guid>>("UserIds")
+                        .IsRequired()
+                        .HasColumnType("uuid[]");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GameTables");
+                });
+
             modelBuilder.Entity("Arpg.Core.Models.Customer.Account", b =>
                 {
                     b.HasOne("Arpg.Core.Models.Customer.User", null)
                         .WithOne()
-                        .HasForeignKey("Arpg.Core.Models.Customer.Account", "UserId")
+                        .HasForeignKey("Arpg.Core.Models.Customer.Account", "OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -207,7 +205,7 @@ namespace Arpg.Infrastructure.Migrations
                         .WithMany("Codes")
                         .HasForeignKey("AccountId");
 
-                    b.HasOne("Arpg.Core.Models.Customer.Account", null)
+                    b.HasOne("Arpg.Core.Models.Customer.User", null)
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -216,6 +214,12 @@ namespace Arpg.Infrastructure.Migrations
 
             modelBuilder.Entity("Arpg.Core.Models.Definitions.Template", b =>
                 {
+                    b.HasOne("Arpg.Core.Models.Customer.User", null)
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.OwnsOne("Arpg.Core.Models.Definitions.TemplateStructure", "Structure", b1 =>
                         {
                             b1.Property<Guid>("TemplateId");

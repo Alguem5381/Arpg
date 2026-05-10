@@ -25,4 +25,6 @@ public class Error(string message)
             _ => GeneralCodes.Generic
         };
     }
+    
+    
 }

@@ -7,4 +7,5 @@ public interface ISheetRepository : IRepository<Sheet>
     Task<Sheet?> GetSheetReadOnlyAsync(Guid id, Guid ownerId);
     Task<Sheet?> GetSheetAsync(Guid id, Guid ownerId);
     Task<bool> AnyAll(IEnumerable<Guid> userIds);
+    Task<List<Guid>> FilterValidByOwnersAsync(IEnumerable<Guid> sheetIds, IEnumerable<Guid> validOwnerIds);
 }
