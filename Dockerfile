@@ -1,4 +1,4 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 #USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
@@ -7,6 +7,8 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["Directory.Packages.props", "./"]
+COPY ["global.json", "./"]
 COPY ["src/Server/Arpg.Api/Arpg.Api.csproj", "src/Server/Arpg.Api/"]
 COPY ["src/Server/Arpg.Infrastructure/Arpg.Infrastructure.csproj", "src/Server/Arpg.Infrastructure/"]
 COPY ["src/Shared/Arpg.Primitives/Arpg.Primitives.csproj", "src/Shared/Arpg.Primitives/"]

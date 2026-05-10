@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace Arpg.Contracts.Validators.Sheet;
 
-public class CreateSheetValidator : AbstractValidator<CreateDto>
+public class CreateSheetValidator : AbstractValidator<NewSheetDto>
 {
     public CreateSheetValidator()
     {
@@ -12,7 +12,6 @@ public class CreateSheetValidator : AbstractValidator<CreateDto>
             .NotEmpty()
             .WithErrorCode(DataFormatCodes.Required)
             .WithMessage("Sheet name is required.")
-
             .Length(2, 50)
             .WithErrorCode(DataFormatCodes.InvalidSize)
             .WithMessage("The username must be at least 2 characters long.");
@@ -24,7 +23,7 @@ public class CreateSheetValidator : AbstractValidator<CreateDto>
     }
 }
 
-public class EditSheetValidator : AbstractValidator<EditDto>
+public class EditSheetValidator : AbstractValidator<EditSheetDto>
 {
     public EditSheetValidator()
     {
@@ -37,14 +36,14 @@ public class EditSheetValidator : AbstractValidator<EditDto>
             .NotEmpty()
             .WithErrorCode(DataFormatCodes.Required)
             .WithMessage("Sheet name is required.")
-
             .Length(2, 50)
             .WithErrorCode(DataFormatCodes.InvalidSize)
-            .WithMessage("The username must be at least 2 characters long."); ;
+            .WithMessage("The username must be at least 2 characters long.");
+        ;
     }
 }
 
-public class ComputeSheetValidator : AbstractValidator<ComputeDto>
+public class ComputeSheetValidator : AbstractValidator<ComputeSheetDto>
 {
     public ComputeSheetValidator()
     {

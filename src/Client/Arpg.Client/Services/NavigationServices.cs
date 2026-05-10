@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Arpg.Client.Abstractions;
-using Arpg.Client.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Arpg.Client.ViewModels.Common;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,16 +11,15 @@ public partial class NavigationService(IServiceProvider serviceProvider) : Obser
 {
     private readonly Stack<ViewModelBase> _history = new();
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(CanGoBack))]
-    private ViewModelBase _currentViewModel = null!;
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(CanGoBack))]
+    private ViewModelBase? _currentViewModel;
 
     public bool CanGoBack => _history.Count > 0;
 
     public void NavigateTo<TViewModel>(Action<TViewModel>? configure = null)
-    where TViewModel : ViewModelBase
+        where TViewModel : ViewModelBase
     {
-        if (CurrentViewModel != null && CurrentViewModel is not JumpableViewModel) 
+        if (CurrentViewModel != null && CurrentViewModel is not JumpableViewModel)
             _history.Push(CurrentViewModel);
 
         var vm = serviceProvider.GetRequiredService<TViewModel>();
@@ -30,13 +28,13 @@ public partial class NavigationService(IServiceProvider serviceProvider) : Obser
 
         CurrentViewModel = vm;
     }
-    
+
     public void JumpTo<TViewModel>(Action<TViewModel>? configure = null)
         where TViewModel : JumpableViewModel
     {
         if (CurrentViewModel != null && CurrentViewModel is not JumpableViewModel jumpableViewModel)
             _history.Push(CurrentViewModel);
-        
+
         var vm = serviceProvider.GetRequiredService<TViewModel>();
 
         configure?.Invoke(vm);

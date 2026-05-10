@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization.Metadata;
-
 using Arpg.Client.Core;
 using Arpg.Primitives.Codes;
 using FluentResults;
@@ -20,7 +19,8 @@ public static class HttpResponseExtensions
             var typeInfoError = AppJsonContext.Default.ErrorResponseDto;
 
             if (AppJsonContext.Default.GetTypeInfo(typeof(T)) is not JsonTypeInfo<T> typeInfoT)
-                throw new InvalidOperationException($"The type {{typeof(T).Name}} was not registered in the AppJsonContext.");
+                throw new InvalidOperationException(
+                    $"The type {typeof(T).Name} was not registered in the AppJsonContext.");
 
             if (response.IsSuccessStatusCode)
             {
@@ -37,7 +37,8 @@ public static class HttpResponseExtensions
             {
                 var errorResponseDto = await response.Content.ReadFromJsonAsync(typeInfoError);
                 if (errorResponseDto is not null && errorResponseDto.Errors.Count != 0)
-                    return result.WithErrors(errorResponseDto.Errors.Select(e => new ApiError(e.Error, e.Code, e.Metadata)));
+                    return result.WithErrors(
+                        errorResponseDto.Errors.Select(e => new ApiError(e.Error, e.Code, e.Metadata)));
             }
             catch
             {

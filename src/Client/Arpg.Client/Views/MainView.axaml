@@ -3,7 +3,147 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Arpg.Client.ViewModels"
+             xmlns:tableDto="using:Arpg.Contracts.Dto.GameTable"
+             xmlns:templateDto="using:Arpg.Contracts.Dto.Template"
+             xmlns:sheetDto="using:Arpg.Contracts.Dto.Sheet"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Arpg.Client.Views.MainView"
              x:DataType="vm:MainViewModel">
+
+    <UserControl.Styles>
+        <!-- Estilo Padrão (Desktop/Janela Larga) -->
+        <Style Selector="SplitView">
+            <!-- CompactInline empurra o conteúdo. Fechado mostra só a beirada (50px). -->
+            <Setter Property="DisplayMode" Value="CompactInline" />
+        </Style>
+
+        <!-- Estilo Mobile (Janela Estreita) -->
+        <Style Selector="SplitView.mobile">
+            <!-- Overlay sobrepõe o conteúdo principal e some completamente quando fechado -->
+            <Setter Property="DisplayMode" Value="Overlay" />
+        </Style>
+    </UserControl.Styles>
+
+    <DockPanel>
+        <!-- Barra Superior (Sempre Visível) -->
+        <Border DockPanel.Dock="Top" Height="50" Background="#202020" BorderBrush="#333333" BorderThickness="0,0,0,1">
+            <Grid ColumnDefinitions="50, *, 50">
+                <!-- Botão Hambúrguer -->
+                <Button Grid.Column="0"
+                        Click="OnHamburgerButtonClick"
+                        Background="Transparent"
+                        Width="50" Height="50"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                    <TextBlock Text="☰" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Button>
+
+                <!-- Título/Opção Atual -->
+                <TextBlock Grid.Column="1"
+                           Text="{Binding CurrentPageTitle}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="White"
+                           FontSize="18"
+                           FontWeight="SemiBold" />
+            </Grid>
+        </Border>
+
+        <!-- Corpo Principal com SplitView -->
+        <SplitView x:Name="AppSplitView" OpenPaneLength="250" CompactPaneLength="50" IsPaneOpen="True">
+            <!-- O Menu Lateral -->
+            <SplitView.Pane>
+                <DockPanel Background="#2A2A2A">
+                    <!-- Itens do Menu (Botões de Navegação) -->
+                    <StackPanel Margin="0,10,0,0">
+                        <Button Background="Transparent" Foreground="White"
+                                Command="{Binding ShowTablesCommand}" HorizontalAlignment="Stretch" Margin="5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🗂️" Margin="5,0,15,0" FontSize="18" />
+                                <TextBlock Text="Mesas" VerticalAlignment="Center" FontSize="16" />
+                            </StackPanel>
+                        </Button>
+                        <Button Background="Transparent" Foreground="White"
+                                Command="{Binding ShowTemplatesCommand}" HorizontalAlignment="Stretch" Margin="5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📄" Margin="5,0,15,0" FontSize="18" />
+                                <TextBlock Text="Modelos" VerticalAlignment="Center" FontSize="16" />
+                            </StackPanel>
+                        </Button>
+                        <Button Background="Transparent" Foreground="White"
+                                Command="{Binding ShowSheetsCommand}" HorizontalAlignment="Stretch" Margin="5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📝" Margin="5,0,15,0" FontSize="18" />
+                                <TextBlock Text="Fichas" VerticalAlignment="Center" FontSize="16" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </DockPanel>
+            </SplitView.Pane>
+
+            <!-- O Conteúdo Principal -->
+            <SplitView.Content>
+                <Border Background="#1E1E1E" Padding="20">
+                    <ScrollViewer>
+                        <ItemsControl ItemsSource="{Binding CurrentItems}">
+                            <!-- Layout fluido para os Cards -->
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel ItemWidth="220" ItemHeight="150" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <!-- Definição de como cada DTO será exibido -->
+                            <ItemsControl.DataTemplates>
+                                <!-- Template para Mesas -->
+                                <DataTemplate DataType="tableDto:SimpleGameTableDto">
+                                    <Border Background="#2A2A2A" CornerRadius="8" Margin="10" Padding="15"
+                                            BorderBrush="#3A3A3A" BorderThickness="1">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"
+                                                       Foreground="White" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="Mesa de Jogo" FontSize="12" Foreground="#888888"
+                                                       Margin="0,5,0,0" />
+                                            <TextBlock Text="{Binding CreatedAt, StringFormat='{}{0:d}'}" FontSize="12"
+                                                       Foreground="#AAAAAA" Margin="0,10,0,0" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+
+                                <!-- Template para Modelos -->
+                                <DataTemplate DataType="templateDto:SimpleTemplateDto">
+                                    <Border Background="#2D283E" CornerRadius="8" Margin="10" Padding="15"
+                                            BorderBrush="#4A3F6B" BorderThickness="1">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"
+                                                       Foreground="White" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="Modelo de Ficha" FontSize="12" Foreground="#888888"
+                                                       Margin="0,5,0,0" />
+                                            <TextBlock Text="{Binding Description}" FontSize="12" Foreground="#AAAAAA"
+                                                       Margin="0,10,0,0" TextWrapping="Wrap" MaxLines="2"
+                                                       TextTrimming="CharacterEllipsis" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+
+                                <!-- Template para Fichas -->
+                                <DataTemplate DataType="sheetDto:SimpleSheetDto">
+                                    <Border Background="#2E3C30" CornerRadius="8" Margin="10" Padding="15"
+                                            BorderBrush="#405C42" BorderThickness="1">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"
+                                                       Foreground="White" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="Ficha de Personagem" FontSize="12" Foreground="#888888"
+                                                       Margin="0,5,0,0" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.DataTemplates>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
+            </SplitView.Content>
+        </SplitView>
+    </DockPanel>
 </UserControl>
+

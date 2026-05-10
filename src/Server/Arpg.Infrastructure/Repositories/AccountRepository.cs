@@ -9,11 +9,8 @@ public class AccountRepository(AppDbContext db) : Repository<Account>(db), IAcco
 {
     private readonly AppDbContext _db = db;
 
-    public async Task<Account?> GetOwnerAsync(Guid ownerId)
+    public async Task<Account?> GetByOwnerAsync(Guid ownerId)
         => await _db.Accounts.FirstOrDefaultAsync(account => account.OwnerId == ownerId);
-
-    public async Task<Account?> GetOwnerReadOnlyAsync(Guid ownerId)
-        => await _db.Accounts.AsNoTracking().FirstOrDefaultAsync(account => account.OwnerId == ownerId);
 
     public async Task<Account?> GetAsync(Guid id)
         => await _db.Accounts.FirstOrDefaultAsync(account => account.Id == id);
@@ -21,18 +18,6 @@ public class AccountRepository(AppDbContext db) : Repository<Account>(db), IAcco
     public async Task<Account?> GetAsync(string email)
         => await _db.Accounts.FirstOrDefaultAsync(account => account.Email == email);
 
-    public async Task<Account?> GetReadOnlyAsync(Guid id)
-        => await _db.Accounts.AsNoTracking().FirstOrDefaultAsync(account => account.Id == id);
-
-    public async Task<Account?> GetReadOnlyAsync(string email)
-        => await _db.Accounts.AsNoTracking().FirstOrDefaultAsync(account => account.Email == email);
-
-    public Task<bool> AnyOwnerAsync(Guid ownerId)
-        => _db.Accounts.AnyAsync(account => account.OwnerId == ownerId);
-
-    public Task<bool> AnyAsync(Guid id)
-        => _db.Accounts.AnyAsync(account => account.Id == id);
-
-    public Task<bool> AnyAsync(string email)
-        => _db.Accounts.AnyAsync(account => account.Email == email);
+    public async Task<bool> AnyAsync(string email)
+        => await _db.Accounts.AnyAsync(account => account.Email == email);
 }

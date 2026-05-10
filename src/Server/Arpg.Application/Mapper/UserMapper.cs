@@ -7,11 +7,11 @@ namespace Arpg.Application.Mapper;
 [Mapper]
 public partial class UserMapper
 {
-    [MapProperty(nameof(NewDto.Username), nameof(User.DisplayName))]
-    [MapperIgnoreSource(nameof(NewDto.Password))]
-    [MapperIgnoreSource(nameof(NewDto.ConfirmPassword))]
-    [MapperIgnoreSource(nameof(NewDto.Email))]
-    public partial User NewDtoToUser(NewDto dto);
+    [MapProperty(nameof(NewUserDto.Username), nameof(User.DisplayName))]
+    [MapperIgnoreSource(nameof(NewUserDto.Password))]
+    [MapperIgnoreSource(nameof(NewUserDto.ConfirmPassword))]
+    [MapperIgnoreSource(nameof(NewUserDto.Email))]
+    public partial User NewDtoToUser(NewUserDto dto);
 
     [MapperIgnoreSource(nameof(User.Id))]
     public partial UserInformationDto UserToUserInformationDto(User user);

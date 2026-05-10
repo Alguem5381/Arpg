@@ -10,8 +10,7 @@ using Arpg.Client.Extensions;
 
 namespace Arpg.Client.ViewModels.Common;
 
-public partial class FormField<T>
-(
+public partial class FormField<T>(
     T initialValue,
     string propertyName,
     Func<Task<ValidationResult?>>? validationAction = null,
@@ -54,7 +53,7 @@ public partial class FormField<T>
 
     public bool TryResolve(ApiError error)
     {
-        if (error.Metadata.TryGetValue(MetadataKey.PropertyName, out var propObj) && propObj is string propName)
+        if (error.Metadata.TryGetValue(Key.PropertyName, out var propObj) && propObj is string propName)
         {
             if (propName == _propertyName)
             {

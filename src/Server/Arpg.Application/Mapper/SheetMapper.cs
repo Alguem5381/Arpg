@@ -9,7 +9,7 @@ public partial class SheetMapper
 {
     [MapperIgnoreTarget(nameof(Sheet.Id))]
     [MapperIgnoreTarget(nameof(Sheet.OwnerId))]
-    public partial Sheet SheetCreateDto(CreateDto dto);
+    public partial Sheet SheetCreateDto(NewSheetDto dto);
 
     [MapperIgnoreSource(nameof(Sheet.TemplateId))]
     public partial SheetDto SheetToSheetDto(Sheet sheet);

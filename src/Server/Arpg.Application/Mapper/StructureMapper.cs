@@ -7,5 +7,5 @@ namespace Arpg.Application.Mapper;
 [Mapper]
 public partial class StructureMapper
 {
-    public partial BatchUpdate BatchUpdateDtoToBatchUpdate(BatchUpdateDto batchUpdateDto);
+    public partial BatchUpdate BatchUpdateDtoToBatchUpdate(BatchStructureDto batchUpdateDto);
 }

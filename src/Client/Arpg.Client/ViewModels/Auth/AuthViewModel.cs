@@ -41,7 +41,7 @@ public partial class AuthViewModel : JumpableViewModel
     private readonly IAuthServices _authServices;
     private readonly FormField<string>[] _fields;
     private readonly IValidator<LoginDto> _loginValidator;
-    private readonly IValidator<NewDto> _newValidator;
+    private readonly IValidator<NewUserDto> _newValidator;
     private readonly IValidator<ValidateCodeDto> _codeValidator;
 
 
@@ -49,7 +49,7 @@ public partial class AuthViewModel : JumpableViewModel
     (
         IAuthServices authServices,
         IValidator<LoginDto> loginValidator,
-        IValidator<NewDto> newValidator,
+        IValidator<NewUserDto> newValidator,
         IValidator<ValidateCodeDto> codeValidator
     )
     {
@@ -69,10 +69,10 @@ public partial class AuthViewModel : JumpableViewModel
 
         Email = new(
             "",
-            nameof(NewDto.Email),
+            nameof(NewUserDto.Email),
             () => _newValidator.ValidateAsync(
                 new(Username!.Value, Email!.Value, Password!.Value, ConfirmPassword!.Value),
-                o => o.IncludeProperties(nameof(NewDto.Email))
+                o => o.IncludeProperties(nameof(NewUserDto.Email))
             ),
             [DataFormatCodes.InvalidEmail]
         );
@@ -89,10 +89,10 @@ public partial class AuthViewModel : JumpableViewModel
 
         ConfirmPassword = new(
             "",
-            nameof(NewDto.ConfirmPassword),
+            nameof(NewUserDto.ConfirmPassword),
             () => _newValidator.ValidateAsync(
                 new(Username!.Value, Email!.Value, Password!.Value, ConfirmPassword!.Value),
-                o => o.IncludeProperties(nameof(NewDto.ConfirmPassword))
+                o => o.IncludeProperties(nameof(NewUserDto.ConfirmPassword))
             )
         );
 

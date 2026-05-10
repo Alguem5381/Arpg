@@ -9,4 +9,5 @@ public static class GeneralCodes
     public const string Domain = nameof(Domain);
     public const string NoConnection = nameof(NoConnection);
     public const string Timeout = nameof(Timeout);
+    public const string InvalidOperation = nameof(InvalidOperation);
 }

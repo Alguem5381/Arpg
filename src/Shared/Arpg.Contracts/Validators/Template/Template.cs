@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace Arpg.Contracts.Validators.Template;
 
-public class CreateDtoValidator : AbstractValidator<TemplateCreateDto>
+public class CreateDtoValidator : AbstractValidator<NewTemplateDto>
 {
     public CreateDtoValidator()
     {
@@ -12,14 +12,13 @@ public class CreateDtoValidator : AbstractValidator<TemplateCreateDto>
             .NotEmpty()
             .WithMessage("The name is required")
             .WithErrorCode(nameof(DataFormatCodes.Required))
-
             .Length(2, 50)
             .WithMessage("The name must be at least 2 characters long.")
             .WithErrorCode(nameof(DataFormatCodes.InvalidSize));
     }
 }
 
-public class EditDtoValidator : AbstractValidator<TemplateEditDto>
+public class EditDtoValidator : AbstractValidator<EditTemplateDto>
 {
     public EditDtoValidator()
     {
@@ -32,7 +31,6 @@ public class EditDtoValidator : AbstractValidator<TemplateEditDto>
             .NotEmpty()
             .WithMessage("The name is required.")
             .WithErrorCode(nameof(DataFormatCodes.Required))
-
             .Length(2, 50)
             .WithMessage("The name must be at least 2 characters long.")
             .WithErrorCode(nameof(DataFormatCodes.InvalidSize));
@@ -44,7 +42,7 @@ public class EditDtoValidator : AbstractValidator<TemplateEditDto>
     }
 }
 
-public class DeleteDtoValidator : AbstractValidator<TemplateDeleteDto>
+public class DeleteDtoValidator : AbstractValidator<DeleteTemplateDto>
 {
     public DeleteDtoValidator()
     {
@@ -57,7 +55,6 @@ public class DeleteDtoValidator : AbstractValidator<TemplateDeleteDto>
             .NotEmpty()
             .WithMessage("A password is required.")
             .WithErrorCode(nameof(DataFormatCodes.Required))
-
             .Length(8, 50)
             .WithMessage("The password must be at least 8 characters long.")
             .WithErrorCode(nameof(DataFormatCodes.InvalidSize));

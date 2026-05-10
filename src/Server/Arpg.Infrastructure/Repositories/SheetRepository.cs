@@ -12,9 +12,18 @@ public class SheetRepository(AppDbContext db) : Repository<Sheet>(db), ISheetRep
     public async Task<Sheet?> GetSheetReadOnlyAsync(Guid id, Guid ownerId)
         => await _db.Sheets
             .AsNoTracking()
-            .FirstOrDefaultAsync(s => s.Id == id && s.OwnerId == ownerId);
-    
+            .FirstOrDefaultAsync(sheet => sheet.Id == id && sheet.OwnerId == ownerId);
+
     public async Task<Sheet?> GetSheetAsync(Guid id, Guid ownerId)
         => await _db.Sheets
-            .FirstOrDefaultAsync(s => s.Id == id && s.OwnerId == ownerId);
+            .FirstOrDefaultAsync(sheet => sheet.Id == id && sheet.OwnerId == ownerId);
+
+    public async Task<bool> AnyAll(IEnumerable<Guid> sheetsId)
+        => await _db.Sheets.CountAsync(sheet => sheetsId.Contains(sheet.Id)) == sheetsId.Count();
+
+    public async Task<List<Guid>> FilterValidByOwnersAsync(IEnumerable<Guid> sheetIds, IEnumerable<Guid> validOwnerIds)
+        => await _db.Sheets
+            .Where(s => sheetIds.Contains(s.Id) && validOwnerIds.Contains(s.OwnerId))
+            .Select(s => s.Id)
+            .ToListAsync();
 }

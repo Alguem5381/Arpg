@@ -21,7 +21,7 @@ public class MockAuthServices(IUserSession userSession) : IAuthServices
         return Result.Ok(new CodeDto(Guid.NewGuid()));
     }
 
-    public async Task<Result<CodeDto>> NewAsync(NewDto request)
+    public async Task<Result<CodeDto>> NewAsync(NewUserDto request)
     {
         await Task.Delay(1500);
 

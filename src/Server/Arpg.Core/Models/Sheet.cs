@@ -19,7 +19,7 @@ public class Sheet
     {
         if (structure.Fields.Count == 0)
             return Result.Fail(new ValidationError("Template is invalid.")
-                .WithMetadata(MetadataKey.Error, TemplateCodes.InvalidTemplate));
+                .With(Key.Error, TemplateCodes.InvalidTemplate));
 
         foreach (var field in structure.Fields)
             Data[field.Id] = field.DefaultValue;
@@ -46,9 +46,9 @@ public class Sheet
             if (!TypeChecker.IsValueValidForType(valueToProcess, field.Type))
             {
                 errors.Add(new ValidationError($"Value for '{field.Name}' is invalid type.")
-                    .WithMetadata(MetadataKey.Error, StructureCodes.FieldAndTypeMismatch)
-                    .WithMetadata(MetadataKey.Category, field.CategoryId)
-                    .WithMetadata(MetadataKey.Field, field.Id));
+                    .With(Key.Error, StructureCodes.FieldAndTypeMismatch)
+                    .With(Key.Category, field.CategoryId)
+                    .With(Key.Field, field.Id));
                 continue;
             }
 

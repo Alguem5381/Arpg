@@ -18,7 +18,7 @@ public class AuthServices
     HttpClient client, 
     IUserSession userSession,
     IValidator<LoginDto> loginDtoValidator,
-    IValidator<NewDto> newDtoValidator,
+    IValidator<NewUserDto> newDtoValidator,
     IValidator<ValidateCodeDto> validateCodeDtoValidator,
     ILogger<AuthServices> logger
 ) : IAuthServices
@@ -60,7 +60,7 @@ public class AuthServices
         }
     }
 
-    public async Task<Result<CodeDto>> NewAsync(NewDto request)
+    public async Task<Result<CodeDto>> NewAsync(NewUserDto request)
     {
         var validation = await newDtoValidator.ValidateAsync(request);
 
@@ -70,7 +70,7 @@ public class AuthServices
         try
         {
             var response =
-                await client.PostAsJsonAsync(ApiEndpoints.User.New, request, AppJsonContext.Default.NewDto);
+                await client.PostAsJsonAsync(ApiEndpoints.User.New, request, AppJsonContext.Default.NewUserDto);
 
             var result = await response.ToResultAsync<CodeDto>();
 

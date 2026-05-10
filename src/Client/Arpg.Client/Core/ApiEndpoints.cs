@@ -26,6 +26,13 @@ public static class ApiEndpoints
         public const string Delete = $"{BaseApi}/{nameof(Template)}";
     }
 
+    public static class GameTable
+    {
+        public const string Create = $"{BaseApi}/{nameof(GameTable)}";
+        public static string Delete(Guid id) => $"{BaseApi}/{nameof(GameTable)}/{id}";
+        public const string GetList = $"{BaseApi}/{nameof(GameTable)}";
+    }
+
     public static class Structure
     {
         public static string StructureUpdate(Guid templateId) => $"{BaseApi}/{nameof(Structure)}/{templateId}/structure";

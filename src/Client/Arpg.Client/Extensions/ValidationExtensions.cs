@@ -1,9 +1,6 @@
 using System.Linq;
-
 using Arpg.Client.Core;
-
 using Arpg.Primitives.Constants;
-
 using FluentResults;
 using FluentValidation.Results;
 
@@ -19,11 +16,11 @@ public static class ValidationExtensions
             {
                 var error = new ApiError(e.ErrorMessage, e.ErrorCode, []);
 
-                error.WithMetadata(MetadataKey.Error, e.ErrorCode);
+                error.WithMetadata(Key.Error, e.ErrorCode);
 
                 if (e.FormattedMessagePlaceholderValues is null) return error;
-                
-                foreach (var placeholder in e.FormattedMessagePlaceholderValues)   
+
+                foreach (var placeholder in e.FormattedMessagePlaceholderValues)
                     error.WithMetadata(placeholder.Key, placeholder.Value);
 
                 return error;

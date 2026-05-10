@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Arpg.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260403041131_Initial")]
+    [Migration("20260421201019_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -45,27 +45,19 @@ namespace Arpg.Infrastructure.Migrations
                     b.Property<DateTime?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.HasIndex("Username")
+                    b.HasIndex("OwnerId")
                         .IsUnique();
 
                     b.ToTable("Accounts");
@@ -106,6 +98,10 @@ namespace Arpg.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
@@ -130,10 +126,12 @@ namespace Arpg.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("OwnerId")
+                    b.Property<Guid>("OwnerId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Templates");
                 });
@@ -154,12 +152,7 @@ namespace Arpg.Infrastructure.Migrations
                     b.Property<Guid>("TemplateId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Sheets");
                 });
@@ -168,7 +161,7 @@ namespace Arpg.Infrastructure.Migrations
                 {
                     b.HasOne("Arpg.Core.Models.Customer.User", null)
                         .WithOne()
-                        .HasForeignKey("Arpg.Core.Models.Customer.Account", "UserId")
+                        .HasForeignKey("Arpg.Core.Models.Customer.Account", "OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -179,7 +172,7 @@ namespace Arpg.Infrastructure.Migrations
                         .WithMany("Codes")
                         .HasForeignKey("AccountId");
 
-                    b.HasOne("Arpg.Core.Models.Customer.Account", null)
+                    b.HasOne("Arpg.Core.Models.Customer.User", null)
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -188,6 +181,12 @@ namespace Arpg.Infrastructure.Migrations
 
             modelBuilder.Entity("Arpg.Core.Models.Definitions.Template", b =>
                 {
+                    b.HasOne("Arpg.Core.Models.Customer.User", null)
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.OwnsOne("Arpg.Core.Models.Definitions.TemplateStructure", "Structure", b1 =>
                         {
                             b1.Property<Guid>("TemplateId");
@@ -264,10 +263,6 @@ namespace Arpg.Infrastructure.Migrations
 
             modelBuilder.Entity("Arpg.Core.Models.Sheet", b =>
                 {
-                    b.HasOne("Arpg.Core.Models.Customer.User", null)
-                        .WithMany("Sheets")
-                        .HasForeignKey("UserId");
-
                     b.OwnsOne("System.Collections.Generic.Dictionary<System.Guid, object>", "Data", b1 =>
                         {
                             b1.Property<Guid>("SheetId");
@@ -291,11 +286,6 @@ namespace Arpg.Infrastructure.Migrations
             modelBuilder.Entity("Arpg.Core.Models.Customer.Account", b =>
                 {
                     b.Navigation("Codes");
-                });
-
-            modelBuilder.Entity("Arpg.Core.Models.Customer.User", b =>
-                {
-                    b.Navigation("Sheets");
                 });
 #pragma warning restore 612, 618
         }

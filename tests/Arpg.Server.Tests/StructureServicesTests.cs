@@ -33,7 +33,7 @@ public class StructureServicesTests
     [Fact]
     public async Task UpdateStructureAsync_TemplateNotFound_ReturnsNotFoundError()
     {
-        var dto = new BatchUpdateDto();
+        var dto = new BatchStructureDto();
         var userId = Guid.NewGuid();
 
         _userContextMock.Setup(x => x.Id).Returns(userId);
@@ -49,7 +49,7 @@ public class StructureServicesTests
     public async Task UpdateStructureAsync_ValidOperations_UpdatesStructureAndCommits()
     {
         var categoryId = Guid.NewGuid();
-        var dto = new BatchUpdateDto
+        var dto = new BatchStructureDto
         {
             TemplateId = Guid.NewGuid(),
             Categories = new List<CategoryOpDto>

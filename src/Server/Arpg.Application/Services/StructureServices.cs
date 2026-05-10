@@ -16,13 +16,13 @@ public class StructureServices(
 {
     private readonly StructureMapper _structureMapper = new();
 
-    public async Task<Result> UpdateStructureAsync(BatchUpdateDto batch)
+    public async Task<Result> UpdateStructureAsync(BatchStructureDto batch)
     {
         var template = await templateRepository.GetAsync(batch.TemplateId, userContext.Id);
 
         if (template is null)
             return Result.Fail(new NotFoundError("Template not found.")
-                .WithMetadata(MetadataKey.Error, TemplateCodes.TemplateNotFound));
+                .With(Key.Error, TemplateCodes.TemplateNotFound));
 
         var update = _structureMapper.BatchUpdateDtoToBatchUpdate(batch);
 

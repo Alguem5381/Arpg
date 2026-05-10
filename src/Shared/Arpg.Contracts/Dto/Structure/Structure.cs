@@ -3,7 +3,7 @@ using Arpg.Primitives.Enums.Template;
 
 namespace Arpg.Contracts.Dto.Structure;
 
-public class BatchUpdateDto
+public class BatchStructureDto
 {
     public Guid TemplateId { get; set; }
     public List<CategoryOpDto>? Categories { get; set; } = [];

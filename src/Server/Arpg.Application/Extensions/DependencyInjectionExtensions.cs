@@ -20,6 +20,7 @@ public static class DependencyInjectionExtensions
             collection.AddScoped<StructureServices>();
             collection.AddScoped<TemplateServices>();
             collection.AddScoped<UserServices>();
+            collection.AddScoped<GameTableServices>();
             collection.AddScoped<AccountServices>();
             collection.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
 

@@ -10,28 +10,37 @@ public class RootViewModel : ViewModelBase
 
     public ViewModelBase CurrentPage => NavigationServices.CurrentViewModel;
 
-    public RootViewModel(INavigationServices nav)
+    private readonly IUserSession _session;
+
+    public RootViewModel(INavigationServices nav, IUserSession session)
     {
         NavigationServices = nav;
+        _session = session;
         StartApp();
     }
 
     private void StartApp()
     {
-        NavigateToLogin();
+        if (_session.IsAuthenticated)
+        {
+            NavigateToMainPage();
+        }
+        else
+        {
+            NavigateToLogin();
+        }
     }
 
     private void NavigateToMainPage()
     {
-        // This should probably navigate to a dashboard or main menu
-        // For now, let's just log or keep it as a placeholder if needed
+        NavigationServices.NavigateTo<MainViewModel>();
     }
 
     private void NavigateToLogin()
     {
-        NavigationServices.JumpTo<AuthViewModel>(vm =>
+        NavigationServices.JumpTo<AuthViewModel>(viewModel =>
         {
-            vm.AuthenticationCompleted += NavigateToMainPage;
+            viewModel.AuthenticationCompleted += NavigateToMainPage;
         });
     }
 }

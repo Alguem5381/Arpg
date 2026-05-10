@@ -20,12 +20,12 @@ public class StructureController(StructureServices structureServices) : BaseCont
     [ProducesResponseType(typeof(SuccessDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status422UnprocessableEntity)]
-    public async Task<IActionResult> UpdateStructure([FromBody] BatchUpdateDto request)
+    public async Task<IActionResult> UpdateStructure([FromBody] BatchStructureDto request)
     {
         var result = await structureServices.UpdateStructureAsync(request);
 
         return result.IsSuccess
             ? Ok(new SuccessDto("Template structure updated successfully."))
-            : ToFailResults(result, true);
+            : ToFailResults(result);
     }
 }
