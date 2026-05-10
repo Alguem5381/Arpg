@@ -5,21 +5,21 @@ using System.Threading.Tasks;
 using Arpg.Client.Abstractions;
 using Arpg.Client.Core;
 using Arpg.Client.Extensions;
-using Arpg.Contracts.Dto.Template;
+using Arpg.Contracts.Dto.GameTable;
 using Arpg.Primitives.Codes;
 using FluentResults;
 using Microsoft.Extensions.Logging;
 
 namespace Arpg.Client.Services;
 
-public class TemplateServices(HttpClient client, ILogger<TemplateServices> logger) : ITemplateServices
+public class GameTableServices(HttpClient client, ILogger<GameTableServices> logger) : ITableServices
 {
-    public async Task<Result<List<SimpleTemplateDto>>> GetListAsync()
+    public async Task<Result<List<SimpleGameTableDto>>> GetListAsync()
     {
         try
         {
-            var response = await client.GetAsync(ApiEndpoints.Template.GetList);
-            return await response.ToResultAsync<List<SimpleTemplateDto>>();
+            var response = await client.GetAsync(ApiEndpoints.GameTable.GetList);
+            return await response.ToResultAsync<List<SimpleGameTableDto>>();
         }
         catch (HttpRequestException)
         {

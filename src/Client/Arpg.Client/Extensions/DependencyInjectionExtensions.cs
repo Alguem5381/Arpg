@@ -30,6 +30,7 @@ public static class DependencyInjectionExtensions
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.BrowserConsole()
+                .WriteTo.Console()
                 .CreateLogger();
 
             servicesCollection.AddLogging(logging => logging.AddSerilog());
@@ -54,13 +55,15 @@ public static class DependencyInjectionExtensions
         public IServiceCollection AddClientServices()
         {
             servicesCollection.AddSingleton<IUserSession, UserSession>();
-            servicesCollection.AddScoped<IAuthServices, AuthServices>();
-            servicesCollection.AddScoped<ISheetServices, SheetServices>();
-            servicesCollection.AddScoped<ITemplateServices, TemplateServices>();
-            servicesCollection.AddScoped<ITableServices, TableServices>();
             servicesCollection.AddTransient<AuthHeaderHandler>();
 
             servicesCollection.AddHttpClient<IAuthServices, AuthServices>(Options)
+                .AddHttpMessageHandler<AuthHeaderHandler>();
+            servicesCollection.AddHttpClient<ISheetServices, SheetServices>(Options)
+                .AddHttpMessageHandler<AuthHeaderHandler>();
+            servicesCollection.AddHttpClient<ITemplateServices, TemplateServices>(Options)
+                .AddHttpMessageHandler<AuthHeaderHandler>();
+            servicesCollection.AddHttpClient<ITableServices, GameTableServices>(Options)
                 .AddHttpMessageHandler<AuthHeaderHandler>();
 
             return servicesCollection;

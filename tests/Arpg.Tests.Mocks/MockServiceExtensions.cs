@@ -9,6 +9,9 @@ public static class MockServiceExtensions
     {
         services.AddSingleton<IUserSession, MockUserSession>();
         services.AddScoped<IAuthServices, MockAuthServices>();
+        services.AddScoped<ITableServices, MockTableServices>();
+        services.AddScoped<ITemplateServices, MockTemplateServices>();
+        services.AddScoped<ISheetServices, MockSheetServices>();
         return services;
     }
 }

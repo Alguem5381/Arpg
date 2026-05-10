@@ -1,6 +1,5 @@
 using System;
 using Arpg.Client.ViewModels.Common;
-using Arpg.Client.ViewModels;
 
 namespace Arpg.Client.Abstractions;
 
