@@ -7,6 +7,7 @@ using Arpg.Client.Abstractions;
 using Arpg.Client.Core;
 using Arpg.Client.Extensions;
 using Arpg.Contracts.Dto.Template;
+using Arpg.Contracts.Dto.Structure;
 using Arpg.Primitives.Codes;
 using FluentResults;
 using Microsoft.Extensions.Logging;
@@ -21,6 +22,25 @@ public class TemplateServices(HttpClient client, ILogger<TemplateServices> logge
         {
             var response = await client.GetAsync(ApiEndpoints.Template.GetList);
             return await response.ToResultAsync<List<SimpleTemplateDto>>();
+        }
+        catch (HttpRequestException)
+        {
+            logger.LogError("No connection to the server.");
+            return Result.Fail(new ApiError("No connection to the server.", GeneralCodes.NoConnection, []));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("An unknown error occurred. {ex}", ex.Message);
+            return Result.Fail(new ApiError("Internal Fail.", GeneralCodes.Domain, []));
+        }
+    }
+
+    public async Task<Result<TemplateDto>> GetAsync(Guid id)
+    {
+        try
+        {
+            var response = await client.GetAsync(ApiEndpoints.Template.Get(id));
+            return await response.ToResultAsync<TemplateDto>();
         }
         catch (HttpRequestException)
         {
@@ -62,6 +82,28 @@ public class TemplateServices(HttpClient client, ILogger<TemplateServices> logge
                 Content = JsonContent.Create(dto, AppJsonContext.Default.DeleteTemplateDto)
             };
             var response = await client.SendAsync(request);
+            return await response.ToResultAsync();
+        }
+        catch (HttpRequestException)
+        {
+            logger.LogError("No connection to the server.");
+            return Result.Fail(new ApiError("No connection to the server.", GeneralCodes.NoConnection, []));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("An unknown error occurred. {ex}", ex.Message);
+            return Result.Fail(new ApiError("Internal Fail.", GeneralCodes.Domain, []));
+        }
+    }
+
+    public async Task<Result> StructureUpdateAsync(BatchStructureDto dto)
+    {
+        try
+        {
+            var response = await client.PutAsJsonAsync(
+                ApiEndpoints.Structure.StructureUpdate,
+                dto,
+                AppJsonContext.Default.BatchStructureDto);
             return await response.ToResultAsync();
         }
         catch (HttpRequestException)

@@ -7,6 +7,13 @@ public class TemplatesSectionViewModel : SectionViewModelBase
 {
     public TemplatesSectionViewModel(INavigationServiceFactory navFactory) : base(navFactory)
     {
-        LocalNavigation.NavigateTo<TemplatesListViewModel>();
+        LocalNavigation.NavigateTo<TemplatesListViewModel>(vm =>
+        {
+            vm.OnOpenTemplate = id => LocalNavigation.NavigateTo<TemplateEditorViewModel>(editor =>
+            {
+                editor.OnGoBack = () => LocalNavigation.GoBack();
+                editor.Initialize(id);
+            });
+        });
     }
 }

@@ -2,6 +2,7 @@ using Arpg.Client.ViewModels.Common;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
+
 namespace Arpg.Client.ViewModels;
 
 public partial class MainViewModel : ViewModelBase

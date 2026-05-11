@@ -15,6 +15,7 @@ public partial class TemplatesListViewModel : ViewModelBase
     [ObservableProperty] private ObservableCollection<SimpleTemplateDto> _templates = [];
     [ObservableProperty] private bool _isCreateMenuOpen;
     [ObservableProperty] private string _newTemplateName = string.Empty;
+    public Action<Guid>? OnOpenTemplate { get; set; }
 
     public TemplatesListViewModel(ITemplateServices templateServices)
     {
@@ -31,6 +32,9 @@ public partial class TemplatesListViewModel : ViewModelBase
 
     [RelayCommand]
     private void OpenCreateMenu() => IsCreateMenuOpen = true;
+
+    [RelayCommand]
+    private void OpenTemplate(Guid id) => OnOpenTemplate?.Invoke(id);
 
     [RelayCommand]
     private void CloseCreateMenu()

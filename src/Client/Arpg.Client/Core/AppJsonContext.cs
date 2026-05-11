@@ -3,6 +3,8 @@ using Arpg.Contracts.Dto.User;
 using Arpg.Contracts.Dto.GameTable;
 using Arpg.Contracts.Dto.Template;
 using Arpg.Contracts.Dto.Sheet;
+using Arpg.Contracts.Dto.Structure;
+using Arpg.Primitives.Enums.Template;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -27,4 +29,10 @@ namespace Arpg.Client.Core;
 [JsonSerializable(typeof(NewSheetDto))]
 [JsonSerializable(typeof(SuccessCreateDto))]
 [JsonSerializable(typeof(DeleteTemplateDto))]
+[JsonSerializable(typeof(TemplateDto))]
+[JsonSerializable(typeof(FieldType))]
+[JsonSerializable(typeof(Operation))]
+[JsonSerializable(typeof(BatchStructureDto))]
+[JsonSerializable(typeof(List<CategoryOpDto>))]
+[JsonSerializable(typeof(List<FieldOpDto>))]
 internal partial class AppJsonContext : JsonSerializerContext;

@@ -35,7 +35,7 @@ public static class ApiEndpoints
 
     public static class Structure
     {
-        public static string StructureUpdate(Guid templateId) => $"{BaseApi}/{nameof(Structure)}/{templateId}/structure";
+        public const string StructureUpdate = $"{BaseApi}/{nameof(Structure)}/update";
     }
 
     public static class Sheet

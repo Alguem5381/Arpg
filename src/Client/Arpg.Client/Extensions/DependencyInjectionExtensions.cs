@@ -55,6 +55,7 @@ public static class DependencyInjectionExtensions
             
             servicesCollection.AddTransient<TablesListViewModel>();
             servicesCollection.AddTransient<TemplatesListViewModel>();
+            servicesCollection.AddTransient<TemplateEditorViewModel>();
             servicesCollection.AddTransient<SheetsListViewModel>();
 
             servicesCollection.AddSingleton<INavigationServiceFactory, NavigationServiceFactory>();
