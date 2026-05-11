@@ -123,7 +123,8 @@ public class TemplateStructure
                 Name = op.Name ?? "New Field",
                 Type = op.Type ?? FieldType.Text,
                 DefaultValue = op.DefaultValue,
-                IsRequired = op.IsRequired ?? false
+                IsRequired = op.IsRequired ?? false,
+                Order = op.Order ?? structure.Fields.Count(f => f.CategoryId == op.CategoryId)
             });
 
             return Result.Ok();
@@ -159,6 +160,7 @@ public class TemplateStructure
             if (op.Type != null) field.Type = op.Type.Value;
             if (op.SetDefaultValueToNull) field.DefaultValue = null;
             else if (op.DefaultValue != null) field.DefaultValue = op.DefaultValue;
+            if (op.Order != null) field.Order = op.Order.Value;
 
             return Result.Ok();
         }
@@ -194,4 +196,5 @@ public class TemplateField
     public FieldType Type { get; set; }
     public object? DefaultValue { get; set; }
     public bool IsRequired { get; set; }
+    public int Order { get; set; }
 }
