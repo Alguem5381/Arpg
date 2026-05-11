@@ -28,6 +28,7 @@ public class FieldOpDto
     public bool SetDefaultValueToNull { get; set; }
     public object? DefaultValue { get; set; }
     public bool? IsRequired { get; set; }
+    public int? Order { get; set; }
 }
 
 public record StructureErrorDto(string Message, List<ErrorDto> Erros);
