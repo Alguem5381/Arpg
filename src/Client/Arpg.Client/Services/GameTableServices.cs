@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Arpg.Client.Abstractions;
 using Arpg.Client.Core;
@@ -20,6 +21,44 @@ public class GameTableServices(HttpClient client, ILogger<GameTableServices> log
         {
             var response = await client.GetAsync(ApiEndpoints.GameTable.GetList);
             return await response.ToResultAsync<List<SimpleGameTableDto>>();
+        }
+        catch (HttpRequestException)
+        {
+            logger.LogError("No connection to the server.");
+            return Result.Fail(new ApiError("No connection to the server.", GeneralCodes.NoConnection, []));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("An unknown error occurred. {ex}", ex.Message);
+            return Result.Fail(new ApiError("Internal Fail.", GeneralCodes.Domain, []));
+        }
+    }
+
+    public async Task<Result> CreateAsync(NewTableDto dto)
+    {
+        try
+        {
+            var response = await client.PostAsJsonAsync(ApiEndpoints.GameTable.Create, dto, AppJsonContext.Default.NewTableDto);
+            return await response.ToResultAsync();
+        }
+        catch (HttpRequestException)
+        {
+            logger.LogError("No connection to the server.");
+            return Result.Fail(new ApiError("No connection to the server.", GeneralCodes.NoConnection, []));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("An unknown error occurred. {ex}", ex.Message);
+            return Result.Fail(new ApiError("Internal Fail.", GeneralCodes.Domain, []));
+        }
+    }
+
+    public async Task<Result> DeleteAsync(Guid id)
+    {
+        try
+        {
+            var response = await client.DeleteAsync(ApiEndpoints.GameTable.Delete(id));
+            return await response.ToResultAsync();
         }
         catch (HttpRequestException)
         {

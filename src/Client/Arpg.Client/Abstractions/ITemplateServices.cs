@@ -8,4 +8,6 @@ namespace Arpg.Client.Abstractions;
 public interface ITemplateServices
 {
     Task<Result<List<SimpleTemplateDto>>> GetListAsync();
+    Task<Result<SuccessCreateDto>> CreateAsync(NewTemplateDto dto);
+    Task<Result> DeleteAsync(DeleteTemplateDto dto);
 }

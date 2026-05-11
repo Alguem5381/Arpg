@@ -54,5 +54,37 @@ public static class HttpResponseExtensions
 
             return result.WithError(new ApiError("Erro na comunicação com a API.", genericCode, []));
         }
+        public async Task<Result> ToResultAsync()
+        {
+            var typeInfoError = AppJsonContext.Default.ErrorResponseDto;
+
+            if (response.IsSuccessStatusCode)
+            {
+                return Result.Ok();
+            }
+
+            var result = new Result();
+
+            try
+            {
+                var errorResponseDto = await response.Content.ReadFromJsonAsync(typeInfoError);
+                if (errorResponseDto is not null && errorResponseDto.Errors.Count != 0)
+                    return result.WithErrors(
+                        errorResponseDto.Errors.Select(e => new ApiError(e.Error, e.Code, e.Metadata)));
+            }
+            catch
+            {
+                // ignored
+            }
+
+            var genericCode = response.StatusCode switch
+            {
+                System.Net.HttpStatusCode.NotFound => GeneralCodes.NotFound,
+                System.Net.HttpStatusCode.Unauthorized => GeneralCodes.Unauthorized,
+                _ => GeneralCodes.Generic
+            };
+
+            return result.WithError(new ApiError("Erro na comunicação com a API.", genericCode, []));
+        }
     }
 }

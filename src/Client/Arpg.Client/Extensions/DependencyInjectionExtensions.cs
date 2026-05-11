@@ -48,7 +48,18 @@ public static class DependencyInjectionExtensions
             servicesCollection.AddSingleton<RootViewModel>();
             servicesCollection.AddSingleton<MainViewModel>();
             servicesCollection.AddSingleton<AuthViewModel>();
-            servicesCollection.AddSingleton<INavigationServices, NavigationService>();
+            
+            servicesCollection.AddTransient<TablesSectionViewModel>();
+            servicesCollection.AddTransient<TemplatesSectionViewModel>();
+            servicesCollection.AddTransient<SheetsSectionViewModel>();
+            
+            servicesCollection.AddTransient<TablesListViewModel>();
+            servicesCollection.AddTransient<TemplatesListViewModel>();
+            servicesCollection.AddTransient<SheetsListViewModel>();
+
+            servicesCollection.AddSingleton<INavigationServiceFactory, NavigationServiceFactory>();
+            servicesCollection.AddSingleton<INavigationServices>(sp => 
+                sp.GetRequiredService<INavigationServiceFactory>().CreateLocalNavigation());
             return servicesCollection;
         }
 

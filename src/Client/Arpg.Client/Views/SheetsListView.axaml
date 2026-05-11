@@ -1,0 +1,80 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Arpg.Client.ViewModels"
+             xmlns:sheetDto="using:Arpg.Contracts.Dto.Sheet"
+             xmlns:templateDto="using:Arpg.Contracts.Dto.Template"
+             x:Class="Arpg.Client.Views.SheetsListView"
+             x:DataType="vm:SheetsListViewModel">
+    <Grid>
+        <WrapPanel>
+            <Button Command="{Binding OpenCreateMenuCommand}" Width="220" Height="150" Margin="10" Background="#2E3C30" CornerRadius="8" BorderBrush="#405C42" BorderThickness="1">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="+" FontSize="40" HorizontalAlignment="Center" Foreground="#888888"/>
+                    <TextBlock Text="Nova Ficha" HorizontalAlignment="Center" Foreground="#888888"/>
+                </StackPanel>
+            </Button>
+            
+            <ItemsControl ItemsSource="{Binding Sheets}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="sheetDto:SimpleSheetDto">
+                        <Border Background="#2E3C30" CornerRadius="8" Margin="10" Padding="15"
+                                BorderBrush="#405C42" BorderThickness="1" Width="220" Height="150">
+                            <Grid>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16" Foreground="White" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="Ficha de Personagem" FontSize="12" Foreground="#888888" Margin="0,5,0,0" />
+                                </StackPanel>
+                                <Button Content="🗑" Background="Transparent" Foreground="#FF5555" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-10,-10,0"
+                                        Command="{Binding $parent[UserControl].((vm:SheetsListViewModel)DataContext).OpenDeleteMenuCommand}" CommandParameter="{Binding Id}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </WrapPanel>
+
+        <!-- Overlay Menu de Criação -->
+        <Grid IsVisible="{Binding IsCreateMenuOpen}" Background="#80000000" ZIndex="5">
+            <Button Background="Transparent" Command="{Binding CloseCreateMenuCommand}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            <Border Background="#2E3C30" CornerRadius="12" Padding="25" Width="350" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    BorderBrush="#405C42" BorderThickness="1" BoxShadow="0 10 30 0 #40000000">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="Criar Nova Ficha" FontSize="20" FontWeight="Bold" Foreground="White"/>
+                    <TextBox Text="{Binding NewSheetName}" PlaceholderText="Nome da Ficha..." />
+                    <ComboBox ItemsSource="{Binding AvailableTemplates}" SelectedItem="{Binding SelectedTemplate}" PlaceholderText="Selecione um Modelo..." HorizontalAlignment="Stretch">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="templateDto:SimpleTemplateDto">
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <Grid ColumnDefinitions="*, 10, *">
+                        <Button Grid.Column="0" Content="Cancelar" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding CloseCreateMenuCommand}" />
+                        <Button Grid.Column="2" Content="Criar" Background="#405C42" Foreground="White" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding ConfirmCreateCommand}"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Overlay Menu de Deleção -->
+        <Grid IsVisible="{Binding IsDeleteMenuOpen}" Background="#80000000" ZIndex="10">
+            <Button Background="Transparent" Command="{Binding CloseDeleteMenuCommand}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            <Border Background="#2E3C30" CornerRadius="12" Padding="25" Width="350" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    BorderBrush="#FF5555" BorderThickness="1" BoxShadow="0 10 30 0 #40000000">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="Deletar Ficha" FontSize="20" FontWeight="Bold" Foreground="#FF5555"/>
+                    <TextBlock Text="Tem certeza que deseja deletar esta ficha? Essa ação não pode ser desfeita." TextWrapping="Wrap" Foreground="White"/>
+                    <Grid ColumnDefinitions="*, 10, *">
+                        <Button Grid.Column="0" Content="Cancelar" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding CloseDeleteMenuCommand}" />
+                        <Button Grid.Column="2" Content="Deletar" Background="#FF5555" Foreground="White" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding ConfirmDeleteCommand}"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

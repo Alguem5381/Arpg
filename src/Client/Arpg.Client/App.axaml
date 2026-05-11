@@ -35,6 +35,18 @@
         <DataTemplate DataType="{x:Type authVm:AuthViewModel}">
             <authV:AuthView />
         </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:TablesListViewModel}">
+            <v:TablesListView />
+        </DataTemplate>
         
+        <DataTemplate DataType="{x:Type vm:TemplatesListViewModel}">
+            <v:TemplatesListView />
+        </DataTemplate>
+        
+        <DataTemplate DataType="{x:Type vm:SheetsListViewModel}">
+            <v:SheetsListView />
+        </DataTemplate>
+
     </Application.DataTemplates>
 </Application>

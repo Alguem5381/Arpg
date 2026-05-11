@@ -22,4 +22,9 @@ namespace Arpg.Client.Core;
 [JsonSerializable(typeof(List<SimpleGameTableDto>))]
 [JsonSerializable(typeof(List<SimpleTemplateDto>))]
 [JsonSerializable(typeof(List<SimpleSheetDto>))]
+[JsonSerializable(typeof(NewTableDto))]
+[JsonSerializable(typeof(NewTemplateDto))]
+[JsonSerializable(typeof(NewSheetDto))]
+[JsonSerializable(typeof(SuccessCreateDto))]
+[JsonSerializable(typeof(DeleteTemplateDto))]
 internal partial class AppJsonContext : JsonSerializerContext;

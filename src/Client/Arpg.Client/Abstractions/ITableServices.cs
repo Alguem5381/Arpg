@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Arpg.Contracts.Dto.GameTable;
@@ -8,4 +9,6 @@ namespace Arpg.Client.Abstractions;
 public interface ITableServices
 {
     Task<Result<List<SimpleGameTableDto>>> GetListAsync();
+    Task<Result> CreateAsync(NewTableDto dto);
+    Task<Result> DeleteAsync(Guid id);
 }
