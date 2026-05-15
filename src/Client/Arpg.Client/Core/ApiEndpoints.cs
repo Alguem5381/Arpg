@@ -44,7 +44,7 @@ public static class ApiEndpoints
         public static string Get(Guid id) => $"{BaseApi}/{nameof(Sheet)}/{id}";
         public const string GetList = $"{BaseApi}/{nameof(Sheet)}";
         public const string Edit = $"{BaseApi}/{nameof(Sheet)}";
-        public static string Update(Guid id) => $"{BaseApi}/{nameof(Sheet)}/{id}";
+        public const string Update = $"{BaseApi}/{nameof(Sheet)}/update";
         public static string Delete(Guid id) => $"{BaseApi}/{nameof(Sheet)}/{id}";
     }
 

@@ -1,0 +1,75 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Arpg.Client.ViewModels"
+             x:Class="Arpg.Client.Views.SheetEditorView"
+             x:DataType="vm:SheetEditorViewModel">
+    
+    <UserControl.DataTemplates>
+        <!-- Text Field -->
+        <DataTemplate DataType="vm:TextFieldViewModel">
+            <StackPanel Margin="0,5">
+                <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="White" Margin="0,0,0,5" />
+                <TextBox Text="{Binding TextValue}" Background="#3A4A3C" Foreground="White" BorderBrush="#507055" />
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- TextArea Field -->
+        <DataTemplate DataType="vm:TextAreaFieldViewModel">
+            <StackPanel Margin="0,5">
+                <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="White" Margin="0,0,0,5" />
+                <TextBox Text="{Binding TextValue}" AcceptsReturn="True" TextWrapping="Wrap" Height="100" Background="#3A4A3C" Foreground="White" BorderBrush="#507055" />
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- Number Field -->
+        <DataTemplate DataType="vm:NumberFieldViewModel">
+            <StackPanel Margin="0,5">
+                <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="White" Margin="0,0,0,5" />
+                <NumericUpDown Value="{Binding NumberValue}" Background="#3A4A3C" Foreground="White" BorderBrush="#507055" />
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- Boolean Field -->
+        <DataTemplate DataType="vm:BooleanFieldViewModel">
+            <StackPanel Margin="0,5" Orientation="Horizontal" Spacing="10">
+                <CheckBox IsChecked="{Binding BoolValue}" />
+                <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" />
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.DataTemplates>
+
+    <Grid RowDefinitions="Auto, *">
+        
+        <!-- Cabeçalho -->
+        <Border Grid.Row="0" Background="#1E2820" Padding="15" BorderBrush="#405C42" BorderThickness="0,0,0,2">
+            <Grid ColumnDefinitions="Auto, *, Auto, Auto">
+                <Button Grid.Column="0" Content="Voltar" Command="{Binding CancelCommand}" Background="Transparent" Foreground="#888888" Margin="0,0,15,0" />
+                <TextBox Grid.Column="1" Text="{Binding SheetName}" FontSize="24" FontWeight="Bold" Background="Transparent" BorderThickness="0" Foreground="White" VerticalAlignment="Center" />
+                <Button Grid.Column="3" Content="Salvar" Command="{Binding SaveChangesCommand}" Background="#405C42" Foreground="White" Padding="20,8" CornerRadius="4" />
+            </Grid>
+        </Border>
+
+        <!-- Loading Indicator -->
+        <TextBlock Grid.Row="1" IsVisible="{Binding IsLoading}" Text="Carregando..." Foreground="#888888" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" />
+
+        <!-- Conteúdo Principal -->
+        <ScrollViewer Grid.Row="1" IsVisible="{Binding !IsLoading}" Padding="20">
+            <ItemsControl ItemsSource="{Binding Categories}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="vm:SheetCategoryViewModel">
+                        <Border Background="#2E3C30" CornerRadius="8" Margin="0,0,0,20" Padding="20" BorderBrush="#405C42" BorderThickness="1">
+                            <StackPanel>
+                                <!-- Título da Categoria -->
+                                <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="Bold" Foreground="#AACCBB" Margin="0,0,0,15" />
+                                
+                                <!-- Campos (Usa o DataTemplate correspondente do topo do arquivo) -->
+                                <ItemsControl ItemsSource="{Binding Fields}" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        
+    </Grid>
+</UserControl>

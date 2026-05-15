@@ -11,6 +11,7 @@ public record SimpleSheetDto(Guid Id, string Name);
 public record SheetDto(
     Guid Id,
     Guid OwnerId,
+    Guid TemplateId,
     string Name,
     Dictionary<Guid, object?> Data,
     DateTime CreateAt

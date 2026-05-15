@@ -14,6 +14,9 @@ public partial class SheetsListViewModel : ViewModelBase
 {
     private readonly ISheetServices _sheetServices;
     private readonly ITemplateServices _templateServices;
+    
+    public Action<Guid>? OnOpenSheet { get; set; }
+    
     [ObservableProperty] private ObservableCollection<SimpleSheetDto> _sheets = [];
     [ObservableProperty] private bool _isCreateMenuOpen;
     [ObservableProperty] private string _newSheetName = string.Empty;
@@ -60,6 +63,12 @@ public partial class SheetsListViewModel : ViewModelBase
             CloseCreateMenu();
             await LoadDataAsync();
         }
+    }
+
+    [RelayCommand]
+    private void OpenSheet(Guid id)
+    {
+        OnOpenSheet?.Invoke(id);
     }
 
     [ObservableProperty] private bool _isDeleteMenuOpen;

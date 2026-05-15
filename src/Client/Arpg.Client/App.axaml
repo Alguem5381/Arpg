@@ -52,5 +52,9 @@
             <v:SheetsListView />
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type vm:SheetEditorViewModel}">
+            <v:SheetEditorView />
+        </DataTemplate>
+
     </Application.DataTemplates>
 </Application>

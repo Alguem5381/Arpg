@@ -7,5 +7,6 @@ public enum FieldType
 {
     Number,
     Text,
-    TextArea
+    TextArea,
+    Boolean
 }

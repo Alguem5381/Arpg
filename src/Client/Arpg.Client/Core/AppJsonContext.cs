@@ -35,4 +35,10 @@ namespace Arpg.Client.Core;
 [JsonSerializable(typeof(BatchStructureDto))]
 [JsonSerializable(typeof(List<CategoryOpDto>))]
 [JsonSerializable(typeof(List<FieldOpDto>))]
+[JsonSerializable(typeof(SheetDto))]
+[JsonSerializable(typeof(SimpleSheetDto))]
+[JsonSerializable(typeof(List<SimpleSheetDto>))]
+[JsonSerializable(typeof(NewSheetDto))]
+[JsonSerializable(typeof(EditSheetDto))]
+[JsonSerializable(typeof(ComputeSheetDto))]
 internal partial class AppJsonContext : JsonSerializerContext;
